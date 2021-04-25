@@ -5,7 +5,7 @@ import time
 import serial
 
 import Locker_Project.Locker
-from Locker_Project import CMD_ScanInput, CMD_Thread, CMD_Process, Func, QhuFinger,Locker
+from Locker_Project import CMD_ScanInput, CMD_Thread, CMD_Process, Func,Locker
 
 host='192.168.100.9'
 Port=3003
