@@ -7,7 +7,7 @@ import serial
 import Locker_Project.Locker
 from Locker_Project import CMD_ScanInput, CMD_Thread, CMD_Process, Func,Locker
 
-host='192.168.100.9'
+host='192.168.100.3'
 Port=3003
 threamain=[]
 lstID=[]
@@ -56,12 +56,12 @@ def Run():
         condition=threading.Condition()
         lstLock=threading.Lock()
 
-        producer=CMD_Thread.Producer(Cmd=lstID,condition=condition,host=host,Port=Port)
+        producer=CMD_Thread.Producer(Cmd=lstID,condition=condition,host=host,Port=Port,exitEvent=exit_event)
         threamain.append(producer)
 
-        fingerT=CMD_Process.CMD_Process(lstID,condition,lstLocker,lstLock)
+        fingerT=CMD_Process.CMD_Process(lstID,condition,lstLocker,lstLock,exitEvent=exit_event)
         threamain.append(fingerT)
-        scan = CMD_ScanInput.ScanInput(lstinput=lstLocker, lstlock=lstLock,lstID=lst)
+        scan = CMD_ScanInput.ScanInput(lstinput=lstLocker, lstlock=lstLock,lstID=lst,exitEvent=exit_event)
         threamain.append(scan)
         for t in threamain:
             t.start()

@@ -35,7 +35,6 @@ class Producer(threading.Thread):
                     if len(data)>0:
                         full_msg+=data.decode('utf-8')
                     if len(data)<=1024 and len(data)>0:
-
                         self.condition.acquire()
                         self.Cmd.append(full_msg)
                         self.condition.notify()
