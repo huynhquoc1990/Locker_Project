@@ -21,13 +21,13 @@ class ScanInput(threading.Thread):
                 for i in self.lstId:
                     self.lstlock.acquire()
                     if int(i)>16 and self.lstinput[i]==0:
-                        print('123')
+                        print('Q123')
                         # if lstInput2[int(i)-17].value==tinhieuchot:
                         #     lstOutput2[int(i)-17].value=True
                         #     time.sleep(1)
                         #     lstOutput2[int(i)-17].value=False
                     elif self.lstinput[i]==0:
-                        print('112')
+                        print('Q112')
                         # if lstInput1[int(i)-1].value==tinhieuchot:
                         #     lstOutput1[int(i)-1].value=True
                         #     time.sleep(1)
