@@ -1,0 +1,13 @@
+Metadata-Version: 1.1
+Name: Locker-Project
+Version: 0.0.4
+Summary: Locker_Project Load
+Home-page: https://github.com/huynhquoc1990/Locker_Project.git
+Author: Huỳnh Tấn Quốc
+Author-email: huynhquoc1990@gamil.com
+License: MIT
+Description: # Locker_Project
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
