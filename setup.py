@@ -2,7 +2,7 @@ from setuptools import setup
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 setup(
-    name='Locker_Pro',
+    name='Locker_Project',
     version='0.0.2',
     packages=['Locker_Project'],
     url='https://github.com/huynhquoc1990/Locker_Project.git',
@@ -17,5 +17,4 @@ setup(
         "Operating System :: OS Independent",
     ],
     long_description=long_description
-
 )

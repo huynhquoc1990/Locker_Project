@@ -19,10 +19,21 @@ lstInput2=[]
 lstOutput1=[]
 lstOutput2=[]
 
+
 #uart = serial.Serial("/dev/ttyS0", baudrate=528000, timeout=1)#489600  528000
 #finger = adafruit_fingerprint.Adafruit_Fingerprint(uart)
 
 Danhsachtu=[] # chứa và quản lý danh sách tủ
+
+def Update():
+    import sys
+    import subprocess
+    # Go Chuong trinh
+    subprocess.check_call([sys.executable, '-m', 'pip', 'uninstall', 'Locker-Project'])
+    print('Hoan Thanh Go chuong Trinh')
+    # implement pip as a subprocess:
+    print(subprocess.check_call([sys.executable, 'sudo','pip', 'install','Locker-Project']))
+    print('Hoan Thanh')
 
 
 def main():
@@ -68,4 +79,4 @@ def main():
         print('Connect Mysql Error:',str(e))
 
 if __name__ == '__main__':
-    main()
+    Update()
