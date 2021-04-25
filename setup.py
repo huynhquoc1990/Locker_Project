@@ -3,7 +3,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 setup(
     name='Locker_Project',
-    version='0.0.4',
+    version='0.0.5',
     packages=['Locker_Project'],
     url='https://github.com/huynhquoc1990/Locker_Project.git',
     license='MIT',
