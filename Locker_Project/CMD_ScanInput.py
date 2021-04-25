@@ -28,6 +28,7 @@ class ScanInput(threading.Thread):
                         #     lstOutput2[int(i)-17].value=False
                     elif self.lstinput[i]==0:
                         print('Huynh tan Quoc')
+
                         # if lstInput1[int(i)-1].value==tinhieuchot:
                         #     lstOutput1[int(i)-1].value=True
                         #     time.sleep(1)
