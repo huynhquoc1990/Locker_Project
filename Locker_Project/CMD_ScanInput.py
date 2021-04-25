@@ -4,14 +4,23 @@ from datetime import datetime
 from Locker_Project import Func
 tinhieuchot=False
 class ScanInput(threading.Thread):
-    def __init__(self,lstinput,lstlock,lstID):
+    def __init__(self,lstinput,lstlock,lstID,exitEvent):
         threading.Thread.__init__(self)
         self.lstinput=lstinput
         self.lstlock=lstlock
         self.lstId=lstID
+        self._Exit=exitEvent
+    @property
+    def Exit(self):
+        return self._Exit
+    @Exit.setter
+    def Exit(self,exitEvent):
+        self._Exit=exitEvent
     def run(self):
 
         while 1:
+            if self._Exit.is_set():
+                break
             now = datetime.now()
             dt_string = now.strftime("%H:%M:%S")
             if dt_string == '23:59:00':
