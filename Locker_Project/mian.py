@@ -68,6 +68,3 @@ def Run():
 
     except Exception as e:
         print('Connect Mysql Error:',str(e))
-
-if __name__ == '__main__':
-    Run()

@@ -31,7 +31,6 @@ class CMD_Process(threading.Thread):
                     try:
                         if ((dta[1]=='Fused') and dta[2]!="OK\n"):
                             print(dta[1])
-                            lock=Locker.Locker()
 
                             # t1=MyTask_Finger(dta,"fingerprint.jpg",self.lstinput,self.lstLock,dta[1])
                             # self.ListThread.append(t1)
