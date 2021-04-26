@@ -19,8 +19,7 @@ class ScanInput(threading.Thread):
     def run(self):
 
         while 1:
-            if self._Exit.is_set():
-                break
+
             now = datetime.now()
             dt_string = now.strftime("%H:%M:%S")
             if dt_string == '23:59:00':
@@ -42,6 +41,8 @@ class ScanInput(threading.Thread):
                         #     time.sleep(1)
                         #     lstOutput1[int(i)-1].value=False
                     self.lstlock.release()
+                    if self._Exit.is_set():
+                        break
                     time.sleep(1)
             except Exception as e:
                 print('ScanInput Error: ',str(e))

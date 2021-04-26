@@ -1,5 +1,10 @@
 import base64
 import subprocess
+
+
+
+
+
 def TaiCauTruc(_Id,_TypeId,_Data,GetData=1):
     if GetData==1:
         return f'<id>{_Id}</id><type>{_TypeId}</type><data>{_Data}</data>'

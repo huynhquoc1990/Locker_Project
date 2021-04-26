@@ -1,9 +1,8 @@
 
-class Locker():
-    def __init__(self,Id,Status,Sign,Signal_Input=False,Signal_Output=False):
+class Locker:
+    def __init__(self,Id,Status,Signal_Input=False,Signal_Output=False):
         self._Id=Id
         self._Status=Status
-        self._Sign=Sign
         self._Signal_Input=Signal_Input
         self._Signal_Output=Signal_Output
     @property
