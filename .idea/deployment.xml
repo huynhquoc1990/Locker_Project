@@ -5,7 +5,7 @@
       <paths name="pi@113.162.169.56:22 password">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/home/pi/DuAn/Locker_Project" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

@@ -19,6 +19,8 @@ Port=3003
 threamain=[]
 lstID=[]
 lstLocker={}
+tinhieuchot=True
+
 lst=['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30']
 lstouputtemp = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 lstinputtemp = [7, 6, 5, 4, 3, 2, 1, 0, 11, 10, 9, 8, 15, 14, 13, 12]
@@ -38,7 +40,7 @@ sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 exit_event=threading.Event()
 
 Danhsachtu=[] # chứa và quản lý danh sách tủ
-uart = serial.Serial("/dev/ttyS0", baudrate=9600, timeout=1)#489600  528000
+uart = serial.Serial("/dev/ttyS0", baudrate=528000, timeout=1)#489600  528000
 finger = adafruit_fingerprint.Adafruit_Fingerprint(uart)
 def Connect_Device():
     try:
@@ -49,7 +51,6 @@ def Connect_Device():
         if(len(lstI2C)!=4):
            raise  RuntimeError('Loi Ket noi Board inout')
         pn532.SAM_configuration()
-
         mcpOutput1 = MCP23017(i2c, 0x21)
         mcpInput1 = MCP23017(i2c, 0x26)
 
@@ -58,6 +59,7 @@ def Connect_Device():
 
         KhaiBaoInput(mcpInput1,mcpInput2)
         KhaiBaoOutput(mcpOutput1,mcpOutput2)
+
         if len(lstI2C)!=4:
             raise RuntimeError('Loi ket noi I2C')
         if finger.read_templates() != adafruit_fingerprint.OK:
@@ -136,7 +138,7 @@ def Get_Finger_Image(signak=True):
         return base64.b64encode(myimage).decode('utf-8')
     except Exception as e:
         print('Loi Doc Van Tay',str(e))
-        #sensor_reset()
+        # sensor_reset()
         return False
     pass
 
@@ -144,7 +146,6 @@ def Get_Finger_Image(signak=True):
 def Run():
     try:
         Connect_Device()
-
         chuoi = '<id>1212</id><type>getdata</type><data>statusdoor</data>'
         chuoi = chuoi.encode('utf-8')
         size = len(chuoi)
@@ -180,9 +181,16 @@ def Run():
         producer=CMD_Thread.Producer(Cmd=lstID,condition=condition,host=host,Port=Port,exitEvent=exit_event)
         threamain.append(producer)
 
-        fingerT=CMD_Process.CMD_Process(Cmd=lstID,condition=condition,lst_input=lstLocker,lstLock=lstLock,exitEvent=exit_event)
+        fingerT=CMD_Process.CMD_Process(finger=finger,pn532=pn532, Cmd=lstID,condition=condition,
+                                        lst_input=lstLocker,lstLock=lstLock,
+                                        exitEvent=exit_event,input1=lstInput1,
+                                        input2=lstInput2,output1=lstOutput1,output2=lstOutput2,
+                                        tinhieuchot=tinhieuchot,host=host,Port=Port)
         threamain.append(fingerT)
-        scan = CMD_ScanInput.ScanInput(lstinput=lstLocker, lstlock=lstLock,lstID=lst,exitEvent=exit_event)
+        scan = CMD_ScanInput.ScanInput(lstinput=lstLocker, lstlock=lstLock,
+                                       lstID=lst,exitEvent=exit_event,
+                                       input1=lstInput1,input2=lstInput2,
+                                       output1=lstOutput1,output2=lstOutput2)
         threamain.append(scan)
         for t in threamain:
             t.start()
