@@ -3,15 +3,19 @@ import subprocess
 import threading
 import time
 
+from Locker_Project import Func
+
 
 class Producer(threading.Thread):
-    def __init__(self,Cmd,condition,host,Port,exitEvent):
+    def __init__(self,Cmd,condition,host,Port,exitEvent,lstthreadStop):
         threading.Thread.__init__(self)
         self.Cmd=Cmd
         self.condition=condition
         self.host=host
         self.Port=Port
         self._Exit=exitEvent
+        self.lstThread=lstthreadStop
+
     @property
     def Exit(self):
         return self._Exit
@@ -21,9 +25,7 @@ class Producer(threading.Thread):
         self._Exit=exitEvent
 
     def run(self):
-
         while 1:
-
             try:
                 if self._Exit.is_set():
                     break
@@ -35,6 +37,13 @@ class Producer(threading.Thread):
                     if len(data)>0:
                         full_msg+=data.decode('utf-8')
                     if len(data)<=1024 and len(data)>0:
+                        data == full_msg.split(";")
+                        if data[1]=='Update\n':
+                            t1=threading.Thread(target=Func.Update())
+                            t1.start()
+                            for i in self.lstThread:
+                                i._Exit.set()
+                            break
                         self.condition.acquire()
                         self.Cmd.append(full_msg)
                         self.condition.notify()

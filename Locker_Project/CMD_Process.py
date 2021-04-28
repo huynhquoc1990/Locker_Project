@@ -173,7 +173,7 @@ class CMD_Process(threading.Thread):
                                 print("Failed to save fingerprint image")
                         if dta[1]=='Update\n':
 
-                            Func.Update()
+                            #Func.Update()
                             pass
                         break
                     except Exception as e:
