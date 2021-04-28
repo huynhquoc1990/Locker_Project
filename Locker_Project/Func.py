@@ -174,7 +174,7 @@ def CloseLocker(*args):
 
 def save_fingerprint_image(dta,host,Port,finger):
     """Scan fingerprint then save image to filename."""
-    msg=Get_Finger_Image(finger=finger,signak=signal)
+    msg=Get_Finger_Image(finger=finger,signak=True)
     if msg==False:
         print('Khong co van Tay')
         return False
