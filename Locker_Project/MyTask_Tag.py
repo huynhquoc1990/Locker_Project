@@ -50,7 +50,7 @@ class MyTask_Tag(threading.Thread):
                                 sock.close()
                                 del dta1
                         except Exception as e:
-                            print("MyTask_Tag:",str(e))
+                            print("MyTask_Tag:", str(e))
                 except Exception as e:
                     print("MyTask_Tag:", str(e))
         if len(self.mes)==3:
@@ -93,7 +93,9 @@ class MyTask_Tag(threading.Thread):
                                         self._output1[int(value)-1].value=True
                                     t1=threading.Thread(target=Func.CloseLocker,args=[self.mes,self.host,self.Port,self._output1,self._output2,self._input1,self._input2,self._tinhieuchot])
                                     t1.start()
-                            sock11.close()
+                                else:
+                                    print('Kiem tra lai the')
+                                    sock11.close()
                         except Exception as e:
                             print("MyTask_Tag1:",str(e))
                 except Exception as e:

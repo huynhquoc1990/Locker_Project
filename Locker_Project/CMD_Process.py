@@ -2,6 +2,8 @@ import threading
 
 from Locker_Project import Locker,Func,MyTask_Finger,MyTask_Tag
 
+
+
 class CMD_Process(threading.Thread):
     def __init__(self,finger,pn532,Cmd,condition,lst_input,lstLock,exitEvent,input1,input2,output1,output2,host,Port,tinhieuchot):
         threading.Thread.__init__(self)
@@ -20,7 +22,6 @@ class CMD_Process(threading.Thread):
         self.host=host
         self.Port=Port
         self.tinhieuchot=tinhieuchot
-
     @property
     def Exit(self):
         return self._Exit
@@ -41,19 +42,12 @@ class CMD_Process(threading.Thread):
                     try:
                         if ((dta[1]=='Fused') and dta[2]!="OK\n"):
                             try:
-                                t1=MyTask_Finger.MyTask_Finger(finger=self.finger,
-                                                               mes=dta,
-                                                               namefileImg="fingerprint.jpg",
-                                                               lstInput=self.lstinput,
-                                                               lstLock=self.lstLock,
-                                                               TypeReader=dta[1],
-                                                               input1=self._input1,
-                                                               input2=self._input2,
-                                                               output1=self._output1,
-                                                               output2=self._output2,
-                                                               host=self.host,
-                                                               Port=self.Port,
-                                                               tinhieuchot=self.tinhieuchot)
+                                t1=MyTask_Finger.MyTask_Finger(finger=self.finger,mes=dta,
+                                                               namefileImg="fingerprint.jpg", lstInput=self.lstinput,
+                                                               lstLock=self.lstLock, TypeReader=dta[1],
+                                                               input1=self._input1,  input2=self._input2,
+                                                               output1=self._output1,output2=self._output2,
+                                                               host=self.host,       Port=self.Port, tinhieuchot=self.tinhieuchot)
 
                                 self.ListThread.append(t1)
                                 if len(self.ListThread)>0:
@@ -80,6 +74,7 @@ class CMD_Process(threading.Thread):
                                             i.signal=False
 
                                 self.ListThread.append(t2)
+
                                 t2.start()
                                 t2.join()
                             except Exception as e:
@@ -172,7 +167,7 @@ class CMD_Process(threading.Thread):
                                 print(str(e))
                         if dta[1]=='FDK\n':#FDK\n
                             print(dta[1])
-                            if Func.save_fingerprint_image(dta,self.host,self.Port):
+                            if Func.save_fingerprint_image(dta,self.host,self.Port,self.finger):
                                 print('finshed')
                             else:
                                 print("Failed to save fingerprint image")

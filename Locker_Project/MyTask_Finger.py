@@ -70,7 +70,9 @@ class MyTask_Finger(threading.Thread):
                                 self._output1[int(value)-1].value=True
                             t1=threading.Thread(target=Func.CloseLocker,args=[self.mes,self.host,self.Port,self._output1,self._output2,self._input1,self._input2,self._tinhieuchot])
                             t1.start()
-                        sock1.close()
+                        else:
+                            print('Van Tay Chưa Đúng')
+                            sock1.close()
                 except Exception as e:
                     print("MyTask_Finger:",str(e))
     def __del__(self):

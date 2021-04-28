@@ -82,8 +82,6 @@ def Get_Finger_Image(finger,signak=True):
         pixeldata = img.load()
         mask = 0b00001111
         result = finger.get_fpdata(sensorbuffer="image")
-
-        print(result)
         x = 0
         y = 0
         for i in range(len(result)):
@@ -101,8 +99,8 @@ def Get_Finger_Image(finger,signak=True):
         return base64.b64encode(myimage).decode('utf-8')
     except Exception as e:
         print('Loi Doc Van Tay',str(e))
-        sensor_reset()
         return False
+
 def OpenLocker(*args):
     try:
         id,typeF,value=[i for i in args[0]]
@@ -174,9 +172,9 @@ def CloseLocker(*args):
         print('CloseLocker :',str(e))
     pass
 
-def save_fingerprint_image(dta,host,Port):
+def save_fingerprint_image(dta,host,Port,finger):
     """Scan fingerprint then save image to filename."""
-    msg=Get_Finger_Image(signak=True)
+    msg=Get_Finger_Image(finger=finger,signak=signal)
     if msg==False:
         print('Khong co van Tay')
         return False
