@@ -164,15 +164,10 @@ def Run():
                         lstLocker = Func.Convert1(ref)
                         print(lstLocker)
                     scok112.close()
-                    #
-                    # for i in lstLocker.items():
-                    #     tu=Locker.Locker(Id=i[0],Status=i[1],Sign='')
-                    #     Danhsachtu.append(tu)
-                    # print(Danhsachtu)
                     break
             except Exception as e:
                 scok112.close()
-                print('Loi Roi')
+                print('Chưa lấy được dữ liệu từ Server')
         time.sleep(2)
 
         condition=threading.Condition()
@@ -192,10 +187,10 @@ def Run():
                                        input1=lstInput1,input2=lstInput2,
                                        output1=lstOutput1,output2=lstOutput2)
         threamain.append(scan)
+
         for t in threamain:
             t.start()
 
-        #print('Xuong roi ne')
         #exit_event.set()
 
     except Exception as e:

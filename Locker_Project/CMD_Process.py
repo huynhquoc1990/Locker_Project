@@ -128,8 +128,7 @@ class CMD_Process(threading.Thread):
                                     host=self.host,Port=self.Port,
                                     input1=self._input1,input2=self._input2,
                                     output1=self._output1,output2=self._output2,tinhieuchot=self.tinhieuchot
-
-                                        )
+                                    )
                                 self.ListThread.append(t4)
                                 if len(self.ListThread)>0:
                                     for i in self.ListThread:
@@ -173,12 +172,13 @@ class CMD_Process(threading.Thread):
                                 print(str(e))
                         if dta[1]=='FDK\n':#FDK\n
                             print(dta[1])
-                            # if save_fingerprint_image(dta):
-                            #     print('finshed')
-                            # else:
-                            #     print("Failed to save fingerprint image")
+                            if Func.save_fingerprint_image(dta,self.host,self.Port):
+                                print('finshed')
+                            else:
+                                print("Failed to save fingerprint image")
                         if dta[1]=='Update\n':
 
+                            Func.Update()
                             pass
                         break
                     except Exception as e:

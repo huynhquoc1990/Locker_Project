@@ -173,3 +173,35 @@ def CloseLocker(*args):
     except Exception as e:
         print('CloseLocker :',str(e))
     pass
+
+def save_fingerprint_image(dta,host,Port):
+    """Scan fingerprint then save image to filename."""
+    msg=Get_Finger_Image(signak=True)
+    if msg==False:
+        print('Khong co van Tay')
+        return False
+    dta1=TaiCauTruc(dta[0],dta[1].split('\n')[0],msg)
+    dta2=bytes(dta1,'utf-8')
+    size=len(dta2)
+    with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as sock:
+        sock.connect((host,Port))
+        sock.sendall(size.to_bytes(4,byteorder='big'))
+        sock.sendall(dta2)
+        sock.close()
+        del msg,dta1
+        return  True
+    return False
+
+import sys
+import subprocess
+def Update():
+    # Go Chuong trinh
+    #subprocess.check_call([sys.executable, '-m', 'pip', 'uninstall', 'Locker-Project'])
+    #print('Hoan Thanh Go chuong Trinh')
+    # implement pip as a subprocess:
+    subprocess.check_call([sys.executable, '-m','pip', 'install','--upgrade','Locker-Project'])
+    subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--upgrade', 'Locker-Project'])
+    print('Hoan Thanh')
+    restart()
+if __name__ == '__main__':
+    Update()

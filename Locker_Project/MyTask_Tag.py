@@ -99,4 +99,4 @@ class MyTask_Tag(threading.Thread):
                 except Exception as e:
                     print("MyTask_Tag2:",str(e))
     def __del__(self):
-        print(self.name,'Thread MyTag_Tag bi Xoa')
+        print(self.name,' Đã bị xóa')
