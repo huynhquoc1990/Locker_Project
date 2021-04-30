@@ -21,16 +21,18 @@ class ScanInput(threading.Thread):
     def Exit(self,exitEvent):
         self._Exit=exitEvent
     def run(self):
-
         while 1:
-
             now = datetime.now()
             dt_string = now.strftime("%H:%M:%S")
             if dt_string == '23:59:00':
                 Func.restart()
             print(dt_string)
+            if self._Exit.is_set():
+                break
             try:
                 for i in self.lstId:
+                    if self._Exit.is_set():
+                        break
                     self.lstlock.acquire()
                     if int(i)>16 and self.lstinput[i]==0:
                         print('Tu So',i)
@@ -45,9 +47,9 @@ class ScanInput(threading.Thread):
                             time.sleep(1)
                             self._Output1[int(i)-1].value=False
                     self.lstlock.release()
-                    if self._Exit.is_set():
-                        break
+
                     time.sleep(1)
+
             except Exception as e:
                 print('ScanInput Error: ',str(e))
                 continue

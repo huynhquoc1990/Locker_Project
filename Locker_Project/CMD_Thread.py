@@ -5,7 +5,7 @@ import time
 
 from Locker_Project import Func
 
-
+data=''
 class Producer(threading.Thread):
     def __init__(self,Cmd,condition,host,Port,exitEvent,lstthreadStop):
         threading.Thread.__init__(self)
@@ -37,13 +37,17 @@ class Producer(threading.Thread):
                     if len(data)>0:
                         full_msg+=data.decode('utf-8')
                     if len(data)<=1024 and len(data)>0:
-                        data == full_msg.split(";")
+                        data = full_msg.split(";")
                         if data[1]=='Update\n':
+                            exit_event = threading.Event()
+                            exit_event.set()
+                            self._Exit.set()
+                            print('Chương trinh dang update....')
                             t1=threading.Thread(target=Func.Update())
                             t1.start()
-                            for i in self.lstThread:
-                                i._Exit.set()
-                            break
+                            self._Exit.clear()
+                            # for i in self.lstThread:
+                            #     i.start()
                         self.condition.acquire()
                         self.Cmd.append(full_msg)
                         self.condition.notify()

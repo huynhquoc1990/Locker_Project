@@ -171,10 +171,6 @@ class CMD_Process(threading.Thread):
                                 print('finshed')
                             else:
                                 print("Failed to save fingerprint image")
-                        if dta[1]=='Update\n':
-
-                            #Func.Update()
-                            pass
                         break
                     except Exception as e:
                         print('Main Erro: ',str(e))

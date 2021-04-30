@@ -1,3 +1,4 @@
+import struct
 import time
 import serial
 import socket
@@ -141,11 +142,58 @@ def Get_Finger_Image(signak=True):
         # sensor_reset()
         return False
     pass
-
+def get_default_gateway_linux():
+    """Read the default gateway directly from /proc."""
+    with open("/proc/net/route") as fh:
+        for line in fh:
+            fields = line.strip().split()
+            if fields[1] != '00000000' or not int(fields[3], 16) & 2:
+                # If not default route or not RTF_GATEWAY, skip it
+                continue
+            return socket.inet_ntoa(struct.pack("<L", int(fields[2], 16)))
+# while 1:
+#     object=get_default_gateway_linux()
+#     print(object)
+#     time.sleep(5)
 
 def Run():
     try:
         Connect_Device()
+        check=False
+        lstip=Func.get_default_gateway_linux()
+        for i in lstip:
+            host=i
+            try:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM)as Sk:
+                    Sk.settimeout(5)
+                    Sk.connect((host, Port))
+                    Sk.close()
+                    print('tim ra host=',host)
+                    check=True
+                    break
+            except Exception as e:
+                print(str(e))
+
+        # myip = Func.Get_my_ip().split('.')
+        # for i in range(1, 256):
+        #     curr_ip = myip[0] + '.' + myip[1] + '.' + myip[2] + '.' + str(i)
+        #     scan_result = Func.Scan(curr_ip)
+        #     if scan_result != []:
+        #         print(scan_result[0]['ip'] + "\t\t" + scan_result[0]['mac'])
+        #         host=scan_result[0]['ip']
+        #         try:
+        #             with socket.socket(socket.AF_INET,socket.SOCK_STREAM)as Sk:
+        #                 Sk.settimeout(5)
+        #                 Sk.connect((host, Port))
+        #                 Sk.close()
+        #                 print('tim ra host=',host)
+        #                 check=True
+        #                 break
+        #         except Exception as e:
+        #             print(str(e))
+        #             continue
+        if check==False:
+            return False
         chuoi = '<id>1212</id><type>getdata</type><data>statusdoor</data>'
         chuoi = chuoi.encode('utf-8')
         size = len(chuoi)
@@ -172,10 +220,6 @@ def Run():
 
         condition=threading.Condition()
         lstLock=threading.Lock()
-
-        producer=CMD_Thread.Producer(Cmd=lstID,condition=condition,host=host,Port=Port,exitEvent=exit_event)
-        threamain.append(producer)
-
         fingerT=CMD_Process.CMD_Process(finger=finger,pn532=pn532, Cmd=lstID,condition=condition,
                                         lst_input=lstLocker,lstLock=lstLock,
                                         exitEvent=exit_event,input1=lstInput1,
@@ -187,11 +231,16 @@ def Run():
                                        input1=lstInput1,input2=lstInput2,
                                        output1=lstOutput1,output2=lstOutput2)
         threamain.append(scan)
+        producer = CMD_Thread.Producer(Cmd=lstID, condition=condition, host=host, Port=Port, exitEvent=exit_event,lstthreadStop=threamain)
+        threamain.append(producer)
 
         for t in threamain:
             t.start()
 
         #exit_event.set()
+        # while 1:
+        #     time.sleep(2)
+        #     print('Exit',exit_event.is_set())
 
     except Exception as e:
         print('Connect Mysql Error:',str(e))

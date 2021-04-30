@@ -1,8 +1,10 @@
 import base64
 import socket
+import struct
 import subprocess
 import time
 from io import BytesIO
+import scapy.all as scapy
 
 from Locker_Project import adafruit_fingerprint
 
@@ -189,6 +191,42 @@ def save_fingerprint_image(dta,host,Port,finger):
         del msg,dta1
         return  True
     return False
+
+
+def Get_my_ip():
+    """
+    Find my IP address
+    :return:
+    """
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    ip = s.getsockname()[0]
+    s.close()
+    return ip
+
+def Scan(ip):
+    arp_request = scapy.ARP(pdst=ip)
+    broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
+    arp_request_broadcast = broadcast / arp_request
+    answered_list = scapy.srp(arp_request_broadcast, timeout=0.15, verbose=False)[0]
+    clients_list = []
+    for element in answered_list:
+        client_dict = {"ip": element[1].psrc, "mac": element[1].hwsrc}
+        clients_list.append(client_dict)
+    return clients_list
+
+def get_default_gateway_linux():
+    """Read the default gateway directly from /proc."""
+    lst=[]
+    with open("/proc/net/route") as fh:
+        for line in fh:
+            fields = line.strip().split()
+            if fields[1] != '00000000' or not int(fields[3], 16) & 2:
+                # If not default route or not RTF_GATEWAY, skip it
+                continue
+            lst.append(socket.inet_ntoa(struct.pack("<L", int(fields[2], 16))))
+        return lst
+            #return socket.inet_ntoa(struct.pack("<L", int(fields[2], 16)))
 
 import sys
 import subprocess
