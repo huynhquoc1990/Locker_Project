@@ -41,15 +41,6 @@ def Convert1(lst):
 	dict1={lst[i].split(':')[0]:int(lst[i].split(':')[1]) for i in range(0,len(lst)-1)}
 	return dict1
 
-def restart():
-    print ("restarting Pi")
-    command = "/usr/bin/sudo /sbin/shutdown -r now"
-    import subprocess
-    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
-    output = process.communicate()[0]
-    print (output)
-    pass
-
 def sensor_reset(finger):
     """Reset sensor"""
     print("Resetting sensor...")
@@ -230,6 +221,14 @@ def get_default_gateway_linux():
 
 import sys
 import subprocess
+def restart():
+    print ("restarting Pi")
+    command = "/usr/bin/sudo /sbin/shutdown -r now"
+    import subprocess
+    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    print (output)
+    pass
 def Update():
     # Go Chuong trinh
     #subprocess.check_call([sys.executable, '-m', 'pip', 'uninstall', 'Locker-Project'])
