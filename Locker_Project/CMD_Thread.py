@@ -25,6 +25,7 @@ class Producer(threading.Thread):
         self._Exit=exitEvent
 
     def run(self):
+        dem=0
         while 1:
             try:
                 if self._Exit.is_set():
@@ -63,19 +64,23 @@ class Producer(threading.Thread):
                         time.sleep(2)
                     time.sleep(0.1)
                     pass
-
-
             except Exception as e:
                 try:
                     sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+                    sock.settimeout(10)
                     sock.connect_ex((self.host,self.Port))
                     print('Connected')
                 except Exception as e:
                     sock.close()
-                    pi=subprocess.call(['ping',self.host,'-c1','-W2','-q'])
-                    if pi==0:
+                    pi = subprocess.call(['ping', self.host, '-c1', '-W2', '-q'])
+                    if pi == 0:
                         del pi
+                        dem=0
                         continue
+                    else:
+                        dem+=1
+                        if dem==5:
+                            Func.restart()
             # finally:
             #     if checkwifi()==False:
             #         print('Rasp Pi Zero W turn off wifi. Pls reset Rasp pi')
