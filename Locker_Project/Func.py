@@ -1,6 +1,7 @@
 import base64
 import socket
 import struct
+import sys
 import subprocess
 import time
 from io import BytesIO
@@ -218,9 +219,9 @@ def get_default_gateway_linux():
             lst.append(socket.inet_ntoa(struct.pack("<L", int(fields[2], 16))))
         return lst
             #return socket.inet_ntoa(struct.pack("<L", int(fields[2], 16)))
+    pass
 
-import sys
-import subprocess
+
 def restart():
     print ("restarting Pi")
     command = "/usr/bin/sudo /sbin/shutdown -r now"
@@ -230,13 +231,9 @@ def restart():
     print (output)
     pass
 def Update():
-    # Go Chuong trinh
-    #subprocess.check_call([sys.executable, '-m', 'pip', 'uninstall', 'Locker-Project'])
-    #print('Hoan Thanh Go chuong Trinh')
-    # implement pip as a subprocess:
     subprocess.check_call([sys.executable, '-m','pip', 'install','--upgrade','Locker-Project'])
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--upgrade', 'Locker-Project'])
-    print('Hoan Thanh')
     restart()
+    print('Hoan Thanh')
 if __name__ == '__main__':
     Update()

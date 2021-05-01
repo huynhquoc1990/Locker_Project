@@ -160,19 +160,22 @@ def Run():
     try:
         Connect_Device()
         check=False
-        lstip=Func.get_default_gateway_linux()
-        for i in lstip:
-            host=i
-            try:
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM)as Sk:
-                    Sk.settimeout(5)
-                    Sk.connect((host, Port))
-                    Sk.close()
-                    print('tim ra host=',host)
-                    check=True
-                    break
-            except Exception as e:
-                print(str(e))
+        while check!=True:
+            lstip=Func.get_default_gateway_linux()
+            for i in lstip:
+                host=i
+                try:
+                    with socket.socket(socket.AF_INET, socket.SOCK_STREAM)as Sk:
+                        Sk.settimeout(5)
+                        Sk.connect((host, Port))
+                        Sk.close()
+                        print('tim ra host=',host)
+                        check=True
+                        break
+                except Exception as e:
+                    print(str(e))
+            time.sleep(1)
+
 
         # myip = Func.Get_my_ip().split('.')
         # for i in range(1, 256):
@@ -192,8 +195,6 @@ def Run():
         #         except Exception as e:
         #             print(str(e))
         #             continue
-        if check==False:
-            return False
         chuoi = '<id>1212</id><type>getdata</type><data>statusdoor</data>'
         chuoi = chuoi.encode('utf-8')
         size = len(chuoi)

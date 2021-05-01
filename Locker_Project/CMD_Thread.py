@@ -45,7 +45,6 @@ class Producer(threading.Thread):
                             print('Chương trinh dang update....')
                             t1=threading.Thread(target=Func.Update())
                             t1.start()
-                            self._Exit.clear()
                             # for i in self.lstThread:
                             #     i.start()
                         self.condition.acquire()
