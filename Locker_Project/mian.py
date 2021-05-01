@@ -6,7 +6,6 @@ import busio
 import digitalio
 import board
 from adafruit_mcp230xx.mcp23017 import MCP23017
-
 from adafruit_pn532.spi import PN532_SPI
 import base64
 import threading
@@ -14,6 +13,7 @@ from io import BytesIO
 from digitalio import DigitalInOut
 import Locker_Project.Locker
 from Locker_Project import CMD_ScanInput, CMD_Thread, CMD_Process, Func, Locker, adafruit_fingerprint
+
 
 host='192.168.100.3'
 Port=3003
