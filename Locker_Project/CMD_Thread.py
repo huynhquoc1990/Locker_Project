@@ -6,6 +6,7 @@ import time
 from Locker_Project import Func
 
 data=''
+lstip=[]
 class Producer(threading.Thread):
     def __init__(self,Cmd,condition,host,Port,exitEvent,lstthreadStop):
         threading.Thread.__init__(self)
@@ -66,6 +67,21 @@ class Producer(threading.Thread):
                     pass
             except Exception as e:
                 try:
+                    lstip = Func.get_default_gateway_linux()
+                    for i in lstip:
+                        if i==self.host:
+                            break
+                        self.host = i
+                        try:
+                            with socket.socket(socket.AF_INET, socket.SOCK_STREAM)as Sk:
+                                Sk.settimeout(5)
+                                Sk.connect((self.host, self.Port))
+                                Sk.close()
+                                print('tim ra host=', self.host)
+                        except Exception as e:
+                            print(str(e))
+                    lstip.clear()
+
                     sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
                     sock.settimeout(10)
                     sock.connect_ex((self.host,self.Port))
@@ -73,13 +89,15 @@ class Producer(threading.Thread):
                 except Exception as e:
                     sock.close()
                     pi = subprocess.call(['ping', self.host, '-c1', '-W2', '-q'])
+                    print('Ket Qua ping Ip: ',pi)
                     if pi == 0:
                         del pi
+                        sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
                         dem=0
                         continue
                     else:
                         dem+=1
-                        if dem==5:
+                        if dem>=5:
                             Func.restart()
             # finally:
             #     if checkwifi()==False:
