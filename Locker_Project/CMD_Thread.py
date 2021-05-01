@@ -94,8 +94,11 @@ class Producer(threading.Thread):
                     lstip.clear()
                     sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
                     sock.settimeout(10)
-                    sock.connect_ex((self.host,self.Port))
-                    print('Connected')
+                    try:
+                        sock.connect_ex((self.host,self.Port))
+                        print('Connected')
+                    except Exception as e:
+                        print('Mat ket noi',str(e))
                 except Exception as e:
                     sock.close()
                     pi = subprocess.call(['ping', self.host, '-c1', '-W2', '-q'])
