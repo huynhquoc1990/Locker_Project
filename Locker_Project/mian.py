@@ -50,7 +50,7 @@ def Connect_Device():
         if len(pn532.firmware_version)!=4:
             raise RuntimeError('Loi Ket Noi Dau Doc The Tu')
         if(len(lstI2C)!=4):
-           raise  RuntimeError('Loi Ket noi Board inout')
+            raise  RuntimeError('Loi Ket noi Board inout')
         pn532.SAM_configuration()
         mcpOutput1 = MCP23017(i2c, 0x21)
         mcpInput1 = MCP23017(i2c, 0x26)
@@ -161,7 +161,7 @@ def Run():
         Connect_Device()
         check=False
         while check!=True:
-            lstip=Func.get_default_gateway_linux()
+            lstip= Func.get_default_gateway_linux()
             for i in lstip:
                 host=i
                 try:

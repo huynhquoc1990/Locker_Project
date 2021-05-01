@@ -38,6 +38,7 @@ class Producer(threading.Thread):
                         full_msg+=data.decode('utf-8')
                     if len(data)<=1024 and len(data)>0:
                         data = full_msg.split(";")
+                        print('check nhan thong tin',data)
                         if data[1]=='Update\n':
                             exit_event = threading.Event()
                             exit_event.set()
@@ -45,6 +46,7 @@ class Producer(threading.Thread):
                             print('Chương trinh dang update....')
                             t1=threading.Thread(target=Func.Update())
                             t1.start()
+                            sock.close()
                             # for i in self.lstThread:
                             #     i.start()
                         self.condition.acquire()
