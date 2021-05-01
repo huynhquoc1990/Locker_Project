@@ -80,6 +80,9 @@ class Producer(threading.Thread):
                         if i==self.Host:
                             break
                         self.Host = i
+                        for t in self.lstThread:
+                            t.Host=self.Host
+
                         try:
                             with socket.socket(socket.AF_INET, socket.SOCK_STREAM)as Sk:
                                 Sk.settimeout(5)

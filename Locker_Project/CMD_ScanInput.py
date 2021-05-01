@@ -14,12 +14,19 @@ class ScanInput(threading.Thread):
         self._Input2=input2
         self._Output1=output1
         self._Output2=output2
+        self.host=''
     @property
     def Exit(self):
         return self._Exit
     @Exit.setter
     def Exit(self,exitEvent):
         self._Exit=exitEvent
+    @property
+    def Host(self):
+        return self.host
+    @Host.setter
+    def Host(self,host):
+        self.host=host
     def run(self):
         while 1:
             now = datetime.now()
