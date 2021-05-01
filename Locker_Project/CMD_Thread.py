@@ -7,7 +7,10 @@ from Locker_Project import Func
 
 data=''
 lstip=[]
+
 class Producer(threading.Thread):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(10)
     def __init__(self,Cmd,condition,host,Port,exitEvent,lstthreadStop):
         threading.Thread.__init__(self)
         self.Cmd=Cmd
@@ -33,7 +36,8 @@ class Producer(threading.Thread):
         self.host=host
 
     def run(self):
-        dem=0
+        check=False
+        self.sock.connect((self.Host,self.Port))
         while 1:
             time.sleep(2)
             try:
@@ -43,7 +47,7 @@ class Producer(threading.Thread):
                     if self._Exit.is_set():
                         break
                     full_msg=''
-                    data=sock.recv(1024)
+                    data=self.sock.recv(1024)
                     if len(data)>0:
                         full_msg+=data.decode('utf-8')
                     if len(data)<=1024 and len(data)>0:
@@ -57,7 +61,7 @@ class Producer(threading.Thread):
                                 print('Chương trinh dang update....')
                                 t1=threading.Thread(target=Func.Update())
                                 t1.start()
-                                sock.close()
+                                self.sock.close()
                                 # for i in self.lstThread:
                                 #     i.start()
                             else:
@@ -69,49 +73,54 @@ class Producer(threading.Thread):
                         pass
                     full_msg=''
                     if len(data)==0:
-                        sock.close()
-                        time.sleep(2)
+                        self.sock.close()
+                        check=True
                     time.sleep(0.1)
                     pass
             except Exception as e:
+                print(str(e))
                 try:
                     lstip = Func.get_default_gateway_linux()
                     for i in lstip:
                         if i==self.Host:
                             break
                         self.Host = i
-                        for t in self.lstThread:
-                            t.Host=self.Host
-
+                        check=True
                         try:
                             with socket.socket(socket.AF_INET, socket.SOCK_STREAM)as Sk:
                                 Sk.settimeout(5)
-                                Sk.connect((self.host, self.Port))
+                                Sk.connect((self.Host, self.Port))
                                 Sk.close()
-                                print('tim ra host=', self.host)
+                                print('tim ra host=', self.Host)
+                                for t in self.lstThread:
+                                    t.Host = self.Host
                         except Exception as e:
                             print(str(e))
                     lstip.clear()
-                    sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-                    sock.settimeout(10)
-                    try:
-                        sock.connect_ex((self.host,self.Port))
-                        print('Connected')
-                    except Exception as e:
-                        print('Mat ket noi',str(e))
+                    if check==True:
+                        self.sock.close()
+                        self.sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+                        self.sock.settimeout(10)
+                        try:
+                            self.sock.connect((self.Host,self.Port))
+                            check=False
+                            print('Connected')
+                        except Exception as e:
+                            print('Mat ket noi',str(e))
                 except Exception as e:
-                    sock.close()
-                    pi = subprocess.call(['ping', self.host, '-c1', '-W2', '-q'])
-                    print('Ket Qua ping Ip: ',pi)
-                    if pi == 0:
-                        del pi
-                        sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-                        dem=0
-                        continue
-                    else:
-                        dem+=1
-                        if dem>=5:
-                            Func.restart()
+                    self.sock.close()
+                    continue
+                    # pi = subprocess.call(['ping', self.host, '-c1', '-W2', '-q'])
+                    # print('Ket Qua ping Ip: ',pi)
+                    # if pi == 0:
+                    #     del pi
+                    #     sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+                    #     dem=0
+                    #     continue
+                    # else:
+                    #     dem+=1
+                    #     if dem>=5:
+                    #         Func.restart()
             # finally:
             #     if checkwifi()==False:
             #         print('Rasp Pi Zero W turn off wifi. Pls reset Rasp pi')
