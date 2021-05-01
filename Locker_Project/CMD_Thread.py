@@ -40,15 +40,18 @@ class Producer(threading.Thread):
                         data = full_msg.split(";")
                         print('check nhan thong tin',data)
                         if data[1]=='Update\n':
-                            exit_event = threading.Event()
-                            exit_event.set()
-                            self._Exit.set()
-                            print('Chương trinh dang update....')
-                            t1=threading.Thread(target=Func.Update())
-                            t1.start()
-                            sock.close()
-                            # for i in self.lstThread:
-                            #     i.start()
+                            if Func.is_connected()==True:
+                                exit_event = threading.Event()
+                                exit_event.set()
+                                self._Exit.set()
+                                print('Chương trinh dang update....')
+                                t1=threading.Thread(target=Func.Update())
+                                t1.start()
+                                sock.close()
+                                # for i in self.lstThread:
+                                #     i.start()
+                            else:
+                                print('Vui Long Kiem Tra Ket Noi internet. Thu Lai...')
                         self.condition.acquire()
                         self.Cmd.append(full_msg)
                         self.condition.notify()

@@ -221,6 +221,15 @@ def get_default_gateway_linux():
             #return socket.inet_ntoa(struct.pack("<L", int(fields[2], 16)))
     pass
 
+def is_connected():
+    try:
+        # connect to the host -- tells us if the host is actually
+        # reachable
+        socket.create_connection(("1.1.1.1", 53))
+        return True
+    except OSError:
+        pass
+    return False
 
 def restart():
     print ("restarting Pi")
@@ -231,9 +240,14 @@ def restart():
     print (output)
     pass
 def Update():
-    subprocess.check_call([sys.executable, '-m','pip', 'install','--upgrade','Locker-Project'])
-    subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--upgrade', 'Locker-Project'])
-    restart()
-    print('Hoan Thanh')
+    if is_connected()==True:
+        subprocess.check_call([sys.executable, '-m','pip', 'install','--upgrade','Locker-Project'])
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--upgrade', 'Locker-Project'])
+        restart()
+        print('Hoan Thanh')
+    else:
+        print('Khong ket noi Internet')
+        time.sleep(2)
+        restart()
 if __name__ == '__main__':
     Update()
