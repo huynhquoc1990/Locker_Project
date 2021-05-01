@@ -24,10 +24,18 @@ class Producer(threading.Thread):
     @Exit.setter
     def Exit(self,exitEvent):
         self._Exit=exitEvent
+    @property
+    def Host(self):
+        return self.host
+
+    @Host.setter
+    def Host(self,host):
+        self.host=host
 
     def run(self):
         dem=0
         while 1:
+            time.sleep(2)
             try:
                 if self._Exit.is_set():
                     break
@@ -69,9 +77,9 @@ class Producer(threading.Thread):
                 try:
                     lstip = Func.get_default_gateway_linux()
                     for i in lstip:
-                        if i==self.host:
+                        if i==self.Host:
                             break
-                        self.host = i
+                        self.Host = i
                         try:
                             with socket.socket(socket.AF_INET, socket.SOCK_STREAM)as Sk:
                                 Sk.settimeout(5)
@@ -81,7 +89,6 @@ class Producer(threading.Thread):
                         except Exception as e:
                             print(str(e))
                     lstip.clear()
-
                     sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
                     sock.settimeout(10)
                     sock.connect_ex((self.host,self.Port))

@@ -28,6 +28,12 @@ class CMD_Process(threading.Thread):
     @Exit.setter
     def Exit(self,exitEvent):
         self._Exit=exitEvent
+    @property
+    def Host(self):
+        return self.host
+    @Host.setter
+    def Host(self,host):
+        self.host=host
 
     def run(self):
         temp=''
