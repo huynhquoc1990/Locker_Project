@@ -54,7 +54,7 @@ class CMD_Process(threading.Thread):
                                                                lstLock=self.lstLock, TypeReader=dta[1],
                                                                input1=self._input1,  input2=self._input2,
                                                                output1=self._output1,output2=self._output2,
-                                                               host=self.host,       Port=self.Port, tinhieuchot=self.tinhieuchot)
+                                                               host=self.host,       Port=self.Port, tinhieuchot=self.tinhieuchot,blynk=self._blynk)
 
                                 self.ListThread.append(t1)
                                 if len(self.ListThread)>0:
@@ -95,7 +95,7 @@ class CMD_Process(threading.Thread):
                             sic1={id:0}
                             Func.UpdateDict(sic1,self.lstinput)
                             self.lstLock.release()
-                            #lstOutput1[15].value=True
+                            self._blynk.notify('Tu {} Bi huy'.format(id))
                             pass
                         if (dta[1]=='Fopen\n'):#dta[1]=='Fopen\n' or
                             try:
@@ -152,6 +152,7 @@ class CMD_Process(threading.Thread):
                                 sic1={id:1}
                                 Func.UpdateDict(sic1,self.lstinput)
                                 self.lstLock.release()
+                                self._blynk.notify('Tu {} Duoc Kich Hoat su Dung'.format(id))
                                 if int(id)>16:
                                     self._output2[int(id)-17].value=True
                                 else:
@@ -169,6 +170,7 @@ class CMD_Process(threading.Thread):
                                 sic1={id:0}
                                 Func.UpdateDict(sic1,self.lstinput)
                                 self.lstLock.release()
+                                self._blynk.notify('Tu {} Duoc Kich Hoat mo'.format(id))
                                 if int(dta[2])>16:
                                     self._output2[int(dta[2])-17].value=True
                                 else:

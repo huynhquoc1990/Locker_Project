@@ -51,8 +51,10 @@ class MyTask_Tag(threading.Thread):
                                 del dta1
                         except Exception as e:
                             print("MyTask_Tag:", str(e))
+                            self._blynk.notify('MyTask_Tag: ' + str(e))
                 except Exception as e:
                     print("MyTask_Tag:", str(e))
+                    self._blynk.notify('MyTask_Tag: ' + str(e))
         if len(self.mes)==3:
             id,typevalue,value= [i for i in self.mes]
             lmg=0
@@ -87,6 +89,7 @@ class MyTask_Tag(threading.Thread):
                                     sic1={id:1}
                                     Func.UpdateDict(sic1,self.lstInput)
                                     self.listLock.release()
+                                    self._blynk.notify("Tu {} duoc kich hoat".format(id))
                                     if int(value)>16:
                                         self._output2[int(value)-17].value=True
                                     else:
@@ -95,10 +98,13 @@ class MyTask_Tag(threading.Thread):
                                     t1.start()
                                 else:
                                     print('Kiem tra lai the')
+                                    self._blynk.notify('Kiem tra lai the')
                                     sock11.close()
                         except Exception as e:
                             print("MyTask_Tag1:",str(e))
+                            self._blynk.notify("MyTask_Tag1: "+str(e))
                 except Exception as e:
                     print("MyTask_Tag2:",str(e))
+                    self._blynk.notify("MyTask_Tag2: " + str(e))
     def __del__(self):
         print(self.name,' Đã bị xóa')

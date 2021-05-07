@@ -54,12 +54,14 @@ class Producer(threading.Thread):
                     if len(data)<=1024 and len(data)>0:
                         data = full_msg.split(";")
                         print('check nhan thong tin',data)
+                        self._blynk.notify('check nhan thong tin ' +str(data))
                         if data[1]=='Update\n':
                             if Func.is_connected()==True:
                                 exit_event = threading.Event()
                                 exit_event.set()
                                 self._Exit.set()
                                 print('Chương trinh dang update....')
+                                self._blynk.notify('Chương trinh dang update....')
                                 t1=threading.Thread(target=Func.Update())
                                 t1.start()
                                 self.sock.close()
@@ -80,6 +82,7 @@ class Producer(threading.Thread):
                     pass
             except Exception as e:
                 print(str(e))
+                self._blynk.notify(str(e))
                 try:
                     lstip = Func.get_default_gateway_linux()
                     for i in lstip:
@@ -93,10 +96,12 @@ class Producer(threading.Thread):
                                 Sk.connect((self.Host, self.Port))
                                 Sk.close()
                                 print('tim ra host=', self.Host)
+                                self._blynk.notify('Chương trinh dang update....')
                                 for t in self.lstThread:
                                     t.Host = self.Host
                         except Exception as e:
                             print(str(e))
+                            self._blynk.notify(str(e))
                     lstip.clear()
                     if check==True:
                         self.sock.close()
@@ -106,10 +111,13 @@ class Producer(threading.Thread):
                             self.sock.connect((self.Host,self.Port))
                             check=False
                             print('Connected')
+                            self._blynk.notify('Connected')
                         except Exception as e:
                             print('Mat ket noi',str(e))
+                            self._blynk.notify('Mat ket noi: '+str(e))
                 except Exception as e:
                     print(str(e))
+                    self._blynk.notify(str(e))
                     self.sock.close()
                     continue
     def __del__(self):

@@ -4,7 +4,7 @@ import time
 
 from Locker_Project import Func
 class MyTask_Finger(threading.Thread):
-    def __init__(self,finger,mes,namefileImg,lstInput,lstLock,TypeReader,host,Port,input1,input2,output1,output2,tinhieuchot):
+    def __init__(self,finger,mes,namefileImg,lstInput,lstLock,TypeReader,host,Port,input1,input2,output1,output2,tinhieuchot,blynk):
         threading.Thread.__init__(self)
         self.finger=finger
         self.signal=True
@@ -20,13 +20,14 @@ class MyTask_Finger(threading.Thread):
         self._output1=output1
         self._output2=output2
         self._tinhieuchot=tinhieuchot
+        self._blynk=blynk
 
     def run(self):
         if len(self.mes)==2:
             id,value1= [i for i in self.mes]
             times=time.time()
             if self.TypeRead=='Fopen':
-                valueFinger=Func.Get_Finger_Image(finger=self.finger,signak=self.signal)
+                valueFinger=Func.Get_Finger_Image(finger=self.finger,signak=self.signal,blynk=self._blynk)
                 if valueFinger==False:
                     return False
                 try:
@@ -40,6 +41,7 @@ class MyTask_Finger(threading.Thread):
                         sock.close()
                 except Exception as e:
                     print("MyTask_Finger:",str(e))
+                    self._blynk.notify('Fused MyTask_Finger: ' + str(e))
                     Func.sensor_reset(self.finger)
         if len(self.mes)==3:
             id,typevalue,value= [i for i in self.mes]
@@ -64,6 +66,7 @@ class MyTask_Finger(threading.Thread):
                             sic1={id:1}
                             Func.UpdateDict(sic1,self.lstInput)
                             self.listLock.release()
+                            self._blynk.notify("Tu {} duoc kich hoat".format(id))
                             if int(value)>16:
                                 self._output2[int(value)-17].value=True
                             else:
@@ -72,8 +75,11 @@ class MyTask_Finger(threading.Thread):
                             t1.start()
                         else:
                             print('Van Tay Chưa Đúng')
+                            self._blynk.notify('Fused MyTask_Finger: ' + 'Van Tay Chưa Đúng')
                             sock1.close()
                 except Exception as e:
                     print("MyTask_Finger:",str(e))
+                    self._blynk.notify("MyTask_Finger: "+str(e))
     def __del__(self):
         print(self.name,'thread myTag_Finger bi Xoa')
+        self._blynk.notify(self.name+'thread myTag_Finger bi Xoa')
