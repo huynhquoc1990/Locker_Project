@@ -11,7 +11,7 @@ lstip=[]
 class Producer(threading.Thread):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(10)
-    def __init__(self,Cmd,condition,host,Port,exitEvent,lstthreadStop):
+    def __init__(self,Cmd,condition,host,Port,exitEvent,lstthreadStop,blynk):
         threading.Thread.__init__(self)
         self.Cmd=Cmd
         self.condition=condition
@@ -19,18 +19,19 @@ class Producer(threading.Thread):
         self.Port=Port
         self._Exit=exitEvent
         self.lstThread=lstthreadStop
+        self._blynk=blynk
 
     @property
     def Exit(self):
         return self._Exit
-
     @Exit.setter
     def Exit(self,exitEvent):
         self._Exit=exitEvent
+
+
     @property
     def Host(self):
         return self.host
-
     @Host.setter
     def Host(self,host):
         self.host=host
@@ -39,7 +40,7 @@ class Producer(threading.Thread):
         check=False
         self.sock.connect((self.Host,self.Port))
         while 1:
-            time.sleep(2)
+            time.sleep(0.5)
             try:
                 if self._Exit.is_set():
                     break
@@ -108,22 +109,8 @@ class Producer(threading.Thread):
                         except Exception as e:
                             print('Mat ket noi',str(e))
                 except Exception as e:
+                    print(str(e))
                     self.sock.close()
                     continue
-                    # pi = subprocess.call(['ping', self.host, '-c1', '-W2', '-q'])
-                    # print('Ket Qua ping Ip: ',pi)
-                    # if pi == 0:
-                    #     del pi
-                    #     sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-                    #     dem=0
-                    #     continue
-                    # else:
-                    #     dem+=1
-                    #     if dem>=5:
-                    #         Func.restart()
-            # finally:
-            #     if checkwifi()==False:
-            #         print('Rasp Pi Zero W turn off wifi. Pls reset Rasp pi')
-            #         restart()
     def __del__(self):
         print('Doi tuong preducer bi xoa')

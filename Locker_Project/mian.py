@@ -13,9 +13,14 @@ from io import BytesIO
 from digitalio import DigitalInOut
 import Locker_Project.Locker
 from Locker_Project import CMD_ScanInput, CMD_Thread, CMD_Process, Func, Locker, adafruit_fingerprint
+import blynklib
+
+Blynk_Auth= 'sUo9-hDo-8_PfJjt6UCBb4J8Pt_mWVec'
+blynk= blynklib.Blynk(Blynk_Auth)
+WRITE_EVENT_PRINT_MSG = "[WRITE_VIRTUAL_PIN_EVENT] Pin: V{} Value: '{}'"
 
 
-host='192.168.100.3'
+host=''
 Port=3003
 threamain=[]
 lstID=[]
@@ -151,10 +156,16 @@ def get_default_gateway_linux():
                 # If not default route or not RTF_GATEWAY, skip it
                 continue
             return socket.inet_ntoa(struct.pack("<L", int(fields[2], 16)))
+def Notify(value):
+    blynk.notify(value)
+
 # while 1:
 #     object=get_default_gateway_linux()
 #     print(object)
 #     time.sleep(5)
+def Check_Connected(lstthreadstop):
+
+    pass
 
 def Run():
     try:
@@ -175,7 +186,6 @@ def Run():
                 except Exception as e:
                     print(str(e))
             time.sleep(1)
-
 
         # myip = Func.Get_my_ip().split('.')
         # for i in range(1, 256):
@@ -225,18 +235,24 @@ def Run():
                                         lst_input=lstLocker,lstLock=lstLock,
                                         exitEvent=exit_event,input1=lstInput1,
                                         input2=lstInput2,output1=lstOutput1,output2=lstOutput2,
-                                        tinhieuchot=tinhieuchot,host=host,Port=Port)
+                                        tinhieuchot=tinhieuchot,host=host,Port=Port,blynk=blynk)
         threamain.append(fingerT)
         scan = CMD_ScanInput.ScanInput(lstinput=lstLocker, lstlock=lstLock,
                                        lstID=lst,exitEvent=exit_event,
                                        input1=lstInput1,input2=lstInput2,
-                                       output1=lstOutput1,output2=lstOutput2)
+                                       output1=lstOutput1,output2=lstOutput2,blynk=blynk)
         threamain.append(scan)
-        producer = CMD_Thread.Producer(Cmd=lstID, condition=condition, host=host, Port=Port, exitEvent=exit_event,lstthreadStop=threamain)
+        producer = CMD_Thread.Producer(Cmd=lstID, condition=condition, host=host, Port=Port, exitEvent=exit_event,lstthreadStop=threamain,blynk=blynk)
         threamain.append(producer)
 
         for t in threamain:
             t.start()
+
+        while 1:
+            if Func.is_connected():
+                blynk.run()
+            else:
+                time.sleep(5)
 
         #exit_event.set()
         # while 1:

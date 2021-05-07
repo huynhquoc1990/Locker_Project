@@ -4,7 +4,7 @@ from datetime import datetime
 from Locker_Project import Func
 tinhieuchot=False
 class ScanInput(threading.Thread):
-    def __init__(self,lstinput,lstlock,lstID,exitEvent,input1,input2,output1,output2):
+    def __init__(self,lstinput,lstlock,lstID,exitEvent,input1,input2,output1,output2,blynk):
         threading.Thread.__init__(self)
         self.lstinput=lstinput
         self.lstlock=lstlock
@@ -15,6 +15,7 @@ class ScanInput(threading.Thread):
         self._Output1=output1
         self._Output2=output2
         self.host=''
+        self._blynk=blynk
     @property
     def Exit(self):
         return self._Exit
@@ -32,13 +33,16 @@ class ScanInput(threading.Thread):
             now = datetime.now()
             dt_string = now.strftime("%H:%M:%S")
             if dt_string == '23:59:00':
+                self._blynk.notify('Thread Scan Restart Raspi With 24:00:00')
                 Func.restart()
             print(dt_string)
             if self._Exit.is_set():
+                self._blynk.notify('Thread Scan input Stop')
                 break
             try:
                 for i in self.lstId:
                     if self._Exit.is_set():
+                        self._blynk.notify('Thread Scan input Stop')
                         break
                     self.lstlock.acquire()
                     if int(i)>16 and self.lstinput[i]==0:
@@ -59,4 +63,5 @@ class ScanInput(threading.Thread):
 
             except Exception as e:
                 print('ScanInput Error: ',str(e))
+                self._blynk.notify('ScanInput Error: '+str(e))
                 continue

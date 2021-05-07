@@ -228,6 +228,7 @@ def is_connected():
         socket.create_connection(("1.1.1.1", 53))
         return True
     except OSError:
+        print('Khong co ket noi Internet')
         pass
     return False
 
@@ -249,5 +250,11 @@ def Update():
         print('Khong ket noi Internet')
         time.sleep(2)
         restart()
+
+def GhiLog():
+
+    pass
+
+
 if __name__ == '__main__':
     Update()
