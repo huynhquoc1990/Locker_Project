@@ -82,7 +82,6 @@ class Producer(threading.Thread):
                     pass
             except Exception as e:
                 print(str(e))
-                self._blynk.notify(str(e))
                 try:
                     lstip = Func.get_default_gateway_linux()
                     for i in lstip:

@@ -4,7 +4,7 @@ import time
 from Locker_Project import Func
 
 class MyTask_Tag(threading.Thread):
-    def __init__(self,pn532,mes,lstInput,lstLock,TypeReader,host,Port,input1,input2,output1,output2,tinhieuchot):
+    def __init__(self,pn532,mes,lstInput,lstLock,TypeReader,host,Port,input1,input2,output1,output2,tinhieuchot,blynk):
         threading.Thread.__init__(self)
         self.pn532=pn532
         self.signal=True
@@ -19,6 +19,7 @@ class MyTask_Tag(threading.Thread):
         self._output1=output1
         self._output2=output2
         self._tinhieuchot=tinhieuchot
+        self._blynk=blynk
 
     def run(self):
         valueTag = ''

@@ -54,7 +54,7 @@ class CMD_Process(threading.Thread):
                                                                lstLock=self.lstLock, TypeReader=dta[1],
                                                                input1=self._input1,  input2=self._input2,
                                                                output1=self._output1,output2=self._output2,
-                                                               host=self.host,       Port=self.Port, tinhieuchot=self.tinhieuchot,blynk=self._blynk)
+                                                               host=self.host,Port=self.Port, tinhieuchot=self.tinhieuchot,blynk=self._blynk)
 
                                 self.ListThread.append(t1)
                                 if len(self.ListThread)>0:
@@ -73,7 +73,7 @@ class CMD_Process(threading.Thread):
                                     ,lstInput=self.lstinput,lstLock= self.lstLock
                                     ,TypeReader= dta[1], host=self.host, Port=self.Port,
                                     input1=self._input1, input2=self._input2,
-                                    output1=self._output1, output2=self._output2, tinhieuchot=self.tinhieuchot
+                                    output1=self._output1, output2=self._output2, tinhieuchot=self.tinhieuchot,blynk=self._blynk
                                     )
 
                                 if len(self.ListThread)>0:
@@ -111,7 +111,7 @@ class CMD_Process(threading.Thread):
                                                                output2=self._output2,
                                                                host=self.host,
                                                                Port=self.Port,
-                                                               tinhieuchot=self.tinhieuchot)
+                                                               tinhieuchot=self.tinhieuchot,blynk=self._blynk)
                                 self.ListThread.append(t3)
                                 if len(self.ListThread)>0:
                                     for i in self.ListThread:
@@ -132,7 +132,7 @@ class CMD_Process(threading.Thread):
                                     TypeReader= dta[1].split("\n")[0],
                                     host=self.host,Port=self.Port,
                                     input1=self._input1,input2=self._input2,
-                                    output1=self._output1,output2=self._output2,tinhieuchot=self.tinhieuchot
+                                    output1=self._output1,output2=self._output2,tinhieuchot=self.tinhieuchot,blynk=self._blynk
                                     )
                                 self.ListThread.append(t4)
                                 if len(self.ListThread)>0:
@@ -182,7 +182,7 @@ class CMD_Process(threading.Thread):
                                 print(str(e))
                         if dta[1]=='FDK\n':#FDK\n
                             print(dta[1])
-                            if Func.save_fingerprint_image(dta,self.host,self.Port,self.finger):
+                            if Func.save_fingerprint_image(dta,self.host,self.Port,self.finger,blynk=self._blynk):
                                 print('finshed')
                                 self._blynk.notify('Dang ky van tay moi thanh cong')
                             else:
