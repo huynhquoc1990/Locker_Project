@@ -47,7 +47,7 @@ class MyTask_Finger(threading.Thread):
             id,typevalue,value= [i for i in self.mes]
             times=time.time()
             if self.TypeRead=='Fused':
-                valueFinger=Func.Get_Finger_Image(self.finger,self.signal,blynk=self._blynk)
+                valueFinger=Func.Get_Finger_Image(finger=self.finger,signak=self.signal,blynk=self._blynk)
                 if valueFinger==False:
                     return False
                 try:
