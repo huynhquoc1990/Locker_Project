@@ -5,7 +5,7 @@ from Locker_Project import Locker,Func,MyTask_Finger,MyTask_Tag
 
 
 class CMD_Process(threading.Thread):
-    def __init__(self,finger,pn532,Cmd,condition,lst_input,lstLock,exitEvent,input1,input2,output1,output2,host,Port,tinhieuchot,blynk):
+    def __init__(self,finger,pn532,Cmd,condition,lst_input,lstLock,exitEvent,input1,input2,output1,output2,host,Port,tinhieuchot):
         threading.Thread.__init__(self)
         self.finger=finger
         self.pn532=pn532
@@ -22,7 +22,6 @@ class CMD_Process(threading.Thread):
         self.host=host
         self.Port=Port
         self.tinhieuchot=tinhieuchot
-        self._blynk=blynk
     @property
     def Exit(self):
         return self._Exit
@@ -54,7 +53,7 @@ class CMD_Process(threading.Thread):
                                                                lstLock=self.lstLock, TypeReader=dta[1],
                                                                input1=self._input1,  input2=self._input2,
                                                                output1=self._output1,output2=self._output2,
-                                                               host=self.host,Port=self.Port, tinhieuchot=self.tinhieuchot,blynk=self._blynk)
+                                                               host=self.host,Port=self.Port, tinhieuchot=self.tinhieuchot)
 
                                 self.ListThread.append(t1)
                                 if len(self.ListThread)>0:
@@ -73,7 +72,7 @@ class CMD_Process(threading.Thread):
                                     ,lstInput=self.lstinput,lstLock= self.lstLock
                                     ,TypeReader= dta[1], host=self.host, Port=self.Port,
                                     input1=self._input1, input2=self._input2,
-                                    output1=self._output1, output2=self._output2, tinhieuchot=self.tinhieuchot,blynk=self._blynk
+                                    output1=self._output1, output2=self._output2, tinhieuchot=self.tinhieuchot
                                     )
 
                                 if len(self.ListThread)>0:
@@ -111,7 +110,7 @@ class CMD_Process(threading.Thread):
                                                                output2=self._output2,
                                                                host=self.host,
                                                                Port=self.Port,
-                                                               tinhieuchot=self.tinhieuchot,blynk=self._blynk)
+                                                               tinhieuchot=self.tinhieuchot)
                                 self.ListThread.append(t3)
                                 if len(self.ListThread)>0:
                                     for i in self.ListThread:
@@ -132,7 +131,7 @@ class CMD_Process(threading.Thread):
                                     TypeReader= dta[1].split("\n")[0],
                                     host=self.host,Port=self.Port,
                                     input1=self._input1,input2=self._input2,
-                                    output1=self._output1,output2=self._output2,tinhieuchot=self.tinhieuchot,blynk=self._blynk
+                                    output1=self._output1,output2=self._output2,tinhieuchot=self.tinhieuchot
                                     )
                                 self.ListThread.append(t4)
                                 if len(self.ListThread)>0:
@@ -182,7 +181,7 @@ class CMD_Process(threading.Thread):
                                 print(str(e))
                         if dta[1]=='FDK\n':#FDK\n
                             print(dta[1])
-                            if Func.save_fingerprint_image(dta,self.host,self.Port,self.finger,blynk=self._blynk):
+                            if Func.save_fingerprint_image(dta,self.host,self.Port,self.finger):
                                 print('finshed')
                                 #self._blynk.notify('Dang ky van tay moi thanh cong')
                             else:

@@ -4,7 +4,7 @@ from datetime import datetime
 from Locker_Project import Func
 tinhieuchot=False
 class ScanInput(threading.Thread):
-    def __init__(self,lstinput,lstlock,lstID,exitEvent,input1,input2,output1,output2,blynk):
+    def __init__(self,lstinput,lstlock,lstID,exitEvent,input1,input2,output1,output2):
         threading.Thread.__init__(self)
         self.lstinput=lstinput
         self.lstlock=lstlock
@@ -15,7 +15,6 @@ class ScanInput(threading.Thread):
         self._Output1=output1
         self._Output2=output2
         self.host=''
-        self._blynk=blynk
     @property
     def Exit(self):
         return self._Exit

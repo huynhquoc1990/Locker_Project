@@ -11,7 +11,7 @@ lstip=[]
 class Producer(threading.Thread):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(10)
-    def __init__(self,Cmd,condition,host,Port,exitEvent,lstthreadStop,blynk):
+    def __init__(self,Cmd,condition,host,Port,exitEvent,lstthreadStop):
         threading.Thread.__init__(self)
         self.Cmd=Cmd
         self.condition=condition
@@ -19,7 +19,6 @@ class Producer(threading.Thread):
         self.Port=Port
         self._Exit=exitEvent
         self.lstThread=lstthreadStop
-        self._blynk=blynk
 
     @property
     def Exit(self):

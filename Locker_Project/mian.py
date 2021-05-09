@@ -233,14 +233,14 @@ def Run():
                                         lst_input=lstLocker,lstLock=lstLock,
                                         exitEvent=exit_event,input1=lstInput1,
                                         input2=lstInput2,output1=lstOutput1,output2=lstOutput2,
-                                        tinhieuchot=tinhieuchot,host=host,Port=Port,blynk=blynk)
+                                        tinhieuchot=tinhieuchot,host=host,Port=Port)
         threamain.append(fingerT)
         scan = CMD_ScanInput.ScanInput(lstinput=lstLocker, lstlock=lstLock,
                                        lstID=lst,exitEvent=exit_event,
                                        input1=lstInput1,input2=lstInput2,
-                                       output1=lstOutput1,output2=lstOutput2,blynk=blynk)
+                                       output1=lstOutput1,output2=lstOutput2)
         threamain.append(scan)
-        producer = CMD_Thread.Producer(Cmd=lstID, condition=condition, host=host, Port=Port, exitEvent=exit_event,lstthreadStop=threamain,blynk=blynk)
+        producer = CMD_Thread.Producer(Cmd=lstID, condition=condition, host=host, Port=Port, exitEvent=exit_event,lstthreadStop=threamain)
         threamain.append(producer)
 
         for t in threamain:

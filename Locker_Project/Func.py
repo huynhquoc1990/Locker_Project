@@ -49,7 +49,7 @@ def sensor_reset(finger):
         print("Unable to reset sensor!")
     print("Sensor is reset.")
 '''Lấy ảnh image từ finger, mặc định được lấy về ảnh có định dạng jpg'''
-def Get_Finger_Image(finger,blynk,signak=True,):
+def Get_Finger_Image(finger,signak=True):
     """Scan fingerprint then save image to filename."""
     times=time.time()
     check=False
@@ -170,9 +170,9 @@ def CloseLocker(*args):
         print('CloseLocker :',str(e))
     pass
 
-def save_fingerprint_image(dta,host,Port,finger,blynk):
+def save_fingerprint_image(dta,host,Port,finger):
     """Scan fingerprint then save image to filename."""
-    msg=Get_Finger_Image(finger=finger,blynk=blynk,signak=True)
+    msg=Get_Finger_Image(finger=finger,signak=True)
     if msg==False:
         print('Khong co van Tay')
         return False
@@ -190,10 +190,6 @@ def save_fingerprint_image(dta,host,Port,finger,blynk):
 
 
 def Get_my_ip():
-    """
-    Find my IP address
-    :return:
-    """
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
     ip = s.getsockname()[0]

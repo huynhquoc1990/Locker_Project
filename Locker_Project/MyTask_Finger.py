@@ -4,7 +4,7 @@ import time
 
 from Locker_Project import Func
 class MyTask_Finger(threading.Thread):
-    def __init__(self,finger,mes,namefileImg,lstInput,lstLock,TypeReader,host,Port,input1,input2,output1,output2,tinhieuchot,blynk):
+    def __init__(self,finger,mes,namefileImg,lstInput,lstLock,TypeReader,host,Port,input1,input2,output1,output2,tinhieuchot):
         threading.Thread.__init__(self)
         self.finger=finger
         self.signal=True
@@ -20,14 +20,13 @@ class MyTask_Finger(threading.Thread):
         self._output1=output1
         self._output2=output2
         self._tinhieuchot=tinhieuchot
-        self._blynk=blynk
 
     def run(self):
         if len(self.mes)==2:
             id,value1= [i for i in self.mes]
             times=time.time()
             if self.TypeRead=='Fopen':
-                valueFinger=Func.Get_Finger_Image(finger=self.finger,signak=self.signal,blynk=self._blynk)
+                valueFinger=Func.Get_Finger_Image(finger=self.finger,signak=self.signal)
                 if valueFinger==False:
                     return False
                 try:
@@ -47,7 +46,7 @@ class MyTask_Finger(threading.Thread):
             id,typevalue,value= [i for i in self.mes]
             times=time.time()
             if self.TypeRead=='Fused':
-                valueFinger=Func.Get_Finger_Image(finger=self.finger,signak=self.signal,blynk=self._blynk)
+                valueFinger=Func.Get_Finger_Image(finger=self.finger,signak=self.signal)
                 if valueFinger==False:
                     return False
                 try:
