@@ -45,20 +45,21 @@ class ScanInput(threading.Thread):
                         break
                     self.lstlock.acquire()
                     if int(i)>16 and self.lstinput[i]==0:
-                        print('Tu So',i)
-                        if self._Input2[int(i)-17].value==tinhieuchot:
-                            self._Output2[int(i)-17].value=True
-                            time.sleep(1)
-                            self._Output2[int(i)-17].value=False
-                    elif self.lstinput[i]==0:
-                        print('Tu So',i)
-                        if self._Input1[int(i)-1].value==tinhieuchot:
-                            self._Output1[int(i)-1].value=True
-                            time.sleep(1)
-                            self._Output1[int(i)-1].value=False
-                    self.lstlock.release()
 
-                    time.sleep(1)
+                        if self._Input2[int(i)-17].value==tinhieuchot:
+                            print('Tu So',i," ","Dong Khong Dang Ky")
+                            # self._Output2[int(i)-17].value=True
+                            # time.sleep(1)
+                            # self._Output2[int(i)-17].value=False
+                    elif self.lstinput[i]==0:
+                        #print('Tu So',i)
+                        if self._Input1[int(i)-1].value==tinhieuchot:
+                            print('Tu So',i," ","Dong Khong Dang Ky")
+                            # self._Output1[int(i)-1].value=True
+                            # time.sleep(1)
+                            # self._Output1[int(i)-1].value=False
+                    self.lstlock.release()
+                    time.sleep(0.3)
 
             except Exception as e:
                 print('ScanInput Error: ',str(e))

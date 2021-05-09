@@ -60,8 +60,8 @@ def Connect_Device():
         mcpOutput1 = MCP23017(i2c, 0x21)
         mcpInput1 = MCP23017(i2c, 0x26)
 
-        mcpOutput2 = MCP23017(i2c, 0x20)
-        mcpInput2 = MCP23017(i2c, 0x27)
+        mcpOutput2 = MCP23017(i2c, 0x27)
+        mcpInput2 = MCP23017(i2c, 0x20)
 
         KhaiBaoInput(mcpInput1,mcpInput2)
         KhaiBaoOutput(mcpOutput1,mcpOutput2)

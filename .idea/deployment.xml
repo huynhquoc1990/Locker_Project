@@ -1,32 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="pi@192.168.43.120:22" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="pi@192.168.43.161:22" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="pi">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/home/pi/DuAn/Locker_Project" local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="pi@192.168.43.120:22">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/home/pi/Duan/Locker_Project" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="pi@192.168.43.120:22 (1)">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/home/pi/Duan/Locker_Project" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="pi@192.168.43.120:22 (2)">
+      <paths name="pi2">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="pi@192.168.43.161:22">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/pi/Duan/Locker_Project" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
