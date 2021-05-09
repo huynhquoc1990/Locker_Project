@@ -5,7 +5,7 @@ import sys
 import subprocess
 import time
 from io import BytesIO
-import scapy.all as scapy
+# import scapy.all as scapy
 
 from Locker_Project import adafruit_fingerprint
 
@@ -54,7 +54,7 @@ def Get_Finger_Image(finger,signak=True):
     times=time.time()
     check=False
     try:
-        while ((time.time()-times<=3) and signak==True):
+        while ((time.time()-times<=2) and signak==True):
             i = finger.get_image()
             if i == adafruit_fingerprint.OK:
                 check=True
@@ -196,16 +196,16 @@ def Get_my_ip():
     s.close()
     return ip
 
-def Scan(ip):
-    arp_request = scapy.ARP(pdst=ip)
-    broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
-    arp_request_broadcast = broadcast / arp_request
-    answered_list = scapy.srp(arp_request_broadcast, timeout=0.15, verbose=False)[0]
-    clients_list = []
-    for element in answered_list:
-        client_dict = {"ip": element[1].psrc, "mac": element[1].hwsrc}
-        clients_list.append(client_dict)
-    return clients_list
+# def Scan(ip):
+#     arp_request = scapy.ARP(pdst=ip)
+#     broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
+#     arp_request_broadcast = broadcast / arp_request
+#     answered_list = scapy.srp(arp_request_broadcast, timeout=0.15, verbose=False)[0]
+#     clients_list = []
+#     for element in answered_list:
+#         client_dict = {"ip": element[1].psrc, "mac": element[1].hwsrc}
+#         clients_list.append(client_dict)
+#     return clients_list
 
 def get_default_gateway_linux():
     """Read the default gateway directly from /proc."""

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="pi@192.168.43.161:22" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="pi@192.168.43.242:22 password" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="pi2">
         <serverdata>
@@ -9,10 +9,10 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="pi@192.168.43.161:22">
+      <paths name="pi@192.168.43.242:22 password">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/pi/Duan/Locker_Project" local="$PROJECT_DIR$" />
+            <mapping deploy="/home/pi/DuAn/Locker_Project" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>

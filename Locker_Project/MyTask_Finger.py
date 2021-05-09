@@ -71,6 +71,7 @@ class MyTask_Finger(threading.Thread):
                             else:
                                 self._output1[int(value)-1].value=True
                             t1=threading.Thread(target=Func.CloseLocker,args=[self.mes,self.host,self.Port,self._output1,self._output2,self._input1,self._input2,self._tinhieuchot])
+
                             t1.start()
                         else:
                             print('Van Tay Chưa Đúng')

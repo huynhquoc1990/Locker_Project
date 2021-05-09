@@ -25,7 +25,7 @@ Port=3003
 threamain=[]
 lstID=[]
 lstLocker={}
-tinhieuchot=True
+tinhieuchot=False
 
 lst=['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30']
 lstouputtemp = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
@@ -60,8 +60,10 @@ def Connect_Device():
         mcpOutput1 = MCP23017(i2c, 0x21)
         mcpInput1 = MCP23017(i2c, 0x26)
 
-        mcpOutput2 = MCP23017(i2c, 0x27)
-        mcpInput2 = MCP23017(i2c, 0x20)
+        mcpOutput2 = MCP23017(i2c, 0x27)  # board 2 cuar Mr Hai
+        mcpInput2 = MCP23017(i2c, 0x20)    # board 2 cuar Mr Hai
+        # mcpOutput2 = MCP23017(i2c, 0x20)
+        # mcpInput2 = MCP23017(i2c, 0x27)
 
         KhaiBaoInput(mcpInput1,mcpInput2)
         KhaiBaoOutput(mcpOutput1,mcpOutput2)
@@ -171,6 +173,7 @@ def Run():
         check=False
         while check!=True:
             lstip= Func.get_default_gateway_linux()
+            print(lstip)
             for i in lstip:
                 host=i
                 try:
@@ -235,17 +238,19 @@ def Run():
                                         input2=lstInput2,output1=lstOutput1,output2=lstOutput2,
                                         tinhieuchot=tinhieuchot,host=host,Port=Port)
         threamain.append(fingerT)
-        scan = CMD_ScanInput.ScanInput(lstinput=lstLocker, lstlock=lstLock,
-                                       lstID=lst,exitEvent=exit_event,
-                                       input1=lstInput1,input2=lstInput2,
-                                       output1=lstOutput1,output2=lstOutput2)
-        threamain.append(scan)
+        # scan = CMD_ScanInput.ScanInput(lstinput=lstLocker, lstlock=lstLock,
+        #                                lstID=lst,exitEvent=exit_event,
+        #                                input1=lstInput1,input2=lstInput2,
+        #                                output1=lstOutput1,output2=lstOutput2)
+        # threamain.append(scan)
         producer = CMD_Thread.Producer(Cmd=lstID, condition=condition, host=host, Port=Port, exitEvent=exit_event,lstthreadStop=threamain)
         threamain.append(producer)
 
         for t in threamain:
             t.start()
-
+        # while 1:
+        #     for t in threamain:
+        #         if
         # while 1:
         #     if Func.is_connected():
         #         blynk.run()

@@ -2,8 +2,6 @@ import threading
 
 from Locker_Project import Locker,Func,MyTask_Finger,MyTask_Tag
 
-
-
 class CMD_Process(threading.Thread):
     def __init__(self,finger,pn532,Cmd,condition,lst_input,lstLock,exitEvent,input1,input2,output1,output2,host,Port,tinhieuchot):
         threading.Thread.__init__(self)
@@ -58,8 +56,13 @@ class CMD_Process(threading.Thread):
                                 self.ListThread.append(t1)
                                 if len(self.ListThread)>0:
                                     for i in self.ListThread:
-                                        if i.name!=t1.name:
+                                        if i.name!=t1.name and i.isAlive()==True:
                                             i.signal=False
+                                            try:
+                                                i.setDaemon(True)
+                                            except Exception as e:
+                                                print(str(e))
+                                # print(self.ListThread)
                                 t1.start()
                                 t1.join()
                             except Exception as e:
@@ -74,15 +77,21 @@ class CMD_Process(threading.Thread):
                                     input1=self._input1, input2=self._input2,
                                     output1=self._output1, output2=self._output2, tinhieuchot=self.tinhieuchot
                                     )
-
-                                if len(self.ListThread)>0:
-                                    for i in self.ListThread:
-                                        if i.name!=t2.name:
-                                            i.signal=False
-
                                 self.ListThread.append(t2)
+                                if len(self.ListThread)>0:
 
+                                    for i in self.ListThread:
+                                        if i.name!=t2.name and i.isAlive()==True:
+                                            i.signal=False
+                                            try:
+                                                i.setDaemon(True)
+                                            except Exception as e:
+                                                print(str(e))
+
+
+                                # print(self.ListThread)
                                 t2.start()
+
                                 t2.join()
                             except Exception as e:
                                 #self._blynk.notify('Cused Error: ' + str(e))
@@ -114,8 +123,13 @@ class CMD_Process(threading.Thread):
                                 self.ListThread.append(t3)
                                 if len(self.ListThread)>0:
                                     for i in self.ListThread:
-                                        if i.name!=t3.name:
+                                        if i.name!=t3.name and i.isAlive()==True:
                                             i.signal=False
+                                            try:
+                                                i.setDaemon(True)
+                                            except Exception as e:
+                                                print(str(e))
+                                # print(self.ListThread)
                                 t3.start()
                                 t3.join()
                             except Exception as e:
@@ -136,9 +150,15 @@ class CMD_Process(threading.Thread):
                                 self.ListThread.append(t4)
                                 if len(self.ListThread)>0:
                                     for i in self.ListThread:
-                                        if i.name!=t4.name:
+                                        if i.name!=t4.name and i.isAlive()==True:
                                             i.signal=False
+                                            try:
+                                                i.setDaemon(True)
+                                            except Exception as e:
+                                                print(str(e),i.name)
+                                print(self.ListThread)
                                 t4.start()
+
                                 t4.join()
                             except Exception as e:
                                 #self._blynk.notify('Copen Error: ' + str(e))

@@ -43,9 +43,8 @@ class ScanInput(threading.Thread):
                     if self._Exit.is_set():
                         #self._blynk.notify('Thread Scan input Stop')
                         break
-                    self.lstlock.acquire()
+                    # self.lstlock.acquire()
                     if int(i)>16 and self.lstinput[i]==0:
-
                         if self._Input2[int(i)-17].value==tinhieuchot:
                             print('Tu So',i," ","Dong Khong Dang Ky")
                             # self._Output2[int(i)-17].value=True
@@ -58,8 +57,8 @@ class ScanInput(threading.Thread):
                             # self._Output1[int(i)-1].value=True
                             # time.sleep(1)
                             # self._Output1[int(i)-1].value=False
-                    self.lstlock.release()
-                    time.sleep(0.3)
+                    # self.lstlock.release()
+                    time.sleep(1)
 
             except Exception as e:
                 print('ScanInput Error: ',str(e))
