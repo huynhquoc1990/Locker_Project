@@ -41,7 +41,7 @@ class MyTask_Finger(threading.Thread):
                         sock.close()
                 except Exception as e:
                     print("MyTask_Finger:",str(e))
-                    self._blynk.notify('Fused MyTask_Finger: ' + str(e))
+                    #self._blynk.notify('Fused MyTask_Finger: ' + str(e))
                     Func.sensor_reset(self.finger)
         if len(self.mes)==3:
             id,typevalue,value= [i for i in self.mes]
@@ -66,7 +66,7 @@ class MyTask_Finger(threading.Thread):
                             sic1={id:1}
                             Func.UpdateDict(sic1,self.lstInput)
                             self.listLock.release()
-                            self._blynk.notify("Tu {} duoc kich hoat".format(id))
+                            #self._blynk.notify("Tu {} duoc kich hoat".format(id))
                             if int(value)>16:
                                 self._output2[int(value)-17].value=True
                             else:
@@ -75,11 +75,11 @@ class MyTask_Finger(threading.Thread):
                             t1.start()
                         else:
                             print('Van Tay Chưa Đúng')
-                            self._blynk.notify('Fused MyTask_Finger: ' + 'Van Tay Chưa Đúng')
+                            #self._blynk.notify('Fused MyTask_Finger: ' + 'Van Tay Chưa Đúng')
                             sock1.close()
                 except Exception as e:
                     print("MyTask_Finger:",str(e))
-                    self._blynk.notify("MyTask_Finger: "+str(e))
+                    #self._blynk.notify("MyTask_Finger: "+str(e))
     def __del__(self):
         print(self.name,'thread myTag_Finger bi Xoa')
-        self._blynk.notify(self.name+'thread myTag_Finger bi Xoa')
+        #self._blynk.notify(self.name+'thread myTag_Finger bi Xoa')

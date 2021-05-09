@@ -61,14 +61,14 @@ def Get_Finger_Image(finger,blynk,signak=True,):
                 break
             if i == adafruit_fingerprint.NOFINGER:
                 print(".", end="", flush=True)
-                blynk.notify('Read Finger: Khong Phai Dau Van Tay')
+                #blynk.notify('Read Finger: Khong Phai Dau Van Tay')
             elif i == adafruit_fingerprint.IMAGEFAIL:
-                blynk.notify('Imaging error')
+                #blynk.notify('Imaging error')
                 print("Read Finger: Imaging error")
                 return False
             else:
                 print("Other error")
-                blynk.notify('Read Finger: Other error')
+                #blynk.notify('Read Finger: Other error')
                 return False
         if check==False:
             return False
@@ -96,7 +96,7 @@ def Get_Finger_Image(finger,blynk,signak=True,):
         return base64.b64encode(myimage).decode('utf-8')
     except Exception as e:
         print('Loi Doc Van Tay',str(e))
-        blynk.notify('Loi Doc Van Tay',str(e))
+        #blynk.notify('Loi Doc Van Tay',str(e))
         return False
 
 def OpenLocker(*args):

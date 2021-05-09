@@ -64,7 +64,7 @@ class CMD_Process(threading.Thread):
                                 t1.start()
                                 t1.join()
                             except Exception as e:
-                                self._blynk.notify('Fused Error: '+ str(e))
+                                #self._blynk.notify('Fused Error: '+ str(e))
                                 print(str(e))
                         if ((dta[1]=='Cused') and dta[2]!="OK\n"):
                             try:
@@ -86,7 +86,7 @@ class CMD_Process(threading.Thread):
                                 t2.start()
                                 t2.join()
                             except Exception as e:
-                                self._blynk.notify('Cused Error: ' + str(e))
+                                #self._blynk.notify('Cused Error: ' + str(e))
                                 print(str(e))
                         if (dta[1]=='Cancel'):
                             print(dta[1])
@@ -95,7 +95,7 @@ class CMD_Process(threading.Thread):
                             sic1={id:0}
                             Func.UpdateDict(sic1,self.lstinput)
                             self.lstLock.release()
-                            self._blynk.notify('Tu {} Bi huy'.format(id))
+                            #self._blynk.notify('Tu {} Bi huy'.format(id))
                             pass
                         if (dta[1]=='Fopen\n'):#dta[1]=='Fopen\n' or
                             try:
@@ -120,7 +120,7 @@ class CMD_Process(threading.Thread):
                                 t3.start()
                                 t3.join()
                             except Exception as e:
-                                self._blynk.notify('Fopen Error: ' + str(e))
+                                #self._blynk.notify('Fopen Error: ' + str(e))
                                 print(str(e))
                         if (dta[1]=='Copen\n'):
                             try:
@@ -142,7 +142,7 @@ class CMD_Process(threading.Thread):
                                 t4.start()
                                 t4.join()
                             except Exception as e:
-                                self._blynk.notify('Copen Error: ' + str(e))
+                                #self._blynk.notify('Copen Error: ' + str(e))
                                 print(str(e))
                         if (dta[1]=='Pused'):
                             print(dta[1])
@@ -152,7 +152,7 @@ class CMD_Process(threading.Thread):
                                 sic1={id:1}
                                 Func.UpdateDict(sic1,self.lstinput)
                                 self.lstLock.release()
-                                self._blynk.notify('Tu {} Duoc Kich Hoat su Dung'.format(id))
+                                #self._blynk.notify('Tu {} Duoc Kich Hoat su Dung'.format(id))
                                 if int(id)>16:
                                     self._output2[int(id)-17].value=True
                                 else:
@@ -160,7 +160,7 @@ class CMD_Process(threading.Thread):
                                 t5=threading.Thread(target=Func.CloseLocker,args=[dta,self.host,self.Port,self._output1,self._output2,self._input1,self._input2,self.tinhieuchot])
                                 t5.start()
                             except Exception as e:
-                                self._blynk.notify('Pused Error: ' + str(e))
+                                #self._blynk.notify('Pused Error: ' + str(e))
                                 print(str(e))
                         if dta[1]=='Dooropen':
                             print(dta[1])
@@ -170,7 +170,7 @@ class CMD_Process(threading.Thread):
                                 sic1={id:0}
                                 Func.UpdateDict(sic1,self.lstinput)
                                 self.lstLock.release()
-                                self._blynk.notify('Tu {} Duoc Kich Hoat mo'.format(id))
+                                #self._blynk.notify('Tu {} Duoc Kich Hoat mo'.format(id))
                                 if int(dta[2])>16:
                                     self._output2[int(dta[2])-17].value=True
                                 else:
@@ -178,23 +178,23 @@ class CMD_Process(threading.Thread):
                                 t6=threading.Thread(target=Func.OpenLocker,args=[dta,self.host,self.Port,self._output1,self._output2])
                                 t6.start()
                             except Exception as e:
-                                self._blynk.notify('Dooropen Error: ' + str(e))
+                                #self._blynk.notify('Dooropen Error: ' + str(e))
                                 print(str(e))
                         if dta[1]=='FDK\n':#FDK\n
                             print(dta[1])
                             if Func.save_fingerprint_image(dta,self.host,self.Port,self.finger,blynk=self._blynk):
                                 print('finshed')
-                                self._blynk.notify('Dang ky van tay moi thanh cong')
+                                #self._blynk.notify('Dang ky van tay moi thanh cong')
                             else:
                                 print("Failed to save fingerprint image")
-                                self._blynk.notify('Failed to save fingerprint image')
+                                #self._blynk.notify('Failed to save fingerprint image')
                         break
                     except Exception as e:
                         print('Main Erro: ',str(e))
-                        self._blynk.notify('Main Erro: '+str(e))
+                        #self._blynk.notify('Main Erro: '+str(e))
                         # Connect_Device()
                 self.condition.wait()
             self.condition.release()
     def __del__(self):
         print('Doi Tuong ThreadCMD da bi xoa')
-        self._blynk.notify('Doi Tuong ThreadCMD da bi xoa')
+        #self._blynk.notify('Doi Tuong ThreadCMD da bi xoa')

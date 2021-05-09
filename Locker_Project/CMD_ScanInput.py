@@ -33,16 +33,16 @@ class ScanInput(threading.Thread):
             now = datetime.now()
             dt_string = now.strftime("%H:%M:%S")
             if dt_string == '23:59:00':
-                self._blynk.notify('Thread Scan Restart Raspi With 24:00:00')
+                #self._blynk.notify('Thread Scan Restart Raspi With 24:00:00')
                 Func.restart()
             print(dt_string)
             if self._Exit.is_set():
-                self._blynk.notify('Thread Scan input Stop')
+                #self._blynk.notify('Thread Scan input Stop')
                 break
             try:
                 for i in self.lstId:
                     if self._Exit.is_set():
-                        self._blynk.notify('Thread Scan input Stop')
+                        #self._blynk.notify('Thread Scan input Stop')
                         break
                     self.lstlock.acquire()
                     if int(i)>16 and self.lstinput[i]==0:
@@ -63,5 +63,5 @@ class ScanInput(threading.Thread):
 
             except Exception as e:
                 print('ScanInput Error: ',str(e))
-                self._blynk.notify('ScanInput Error: '+str(e))
+                #self._blynk.notify('ScanInput Error: '+str(e))
                 continue

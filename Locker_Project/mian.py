@@ -13,11 +13,11 @@ from io import BytesIO
 from digitalio import DigitalInOut
 import Locker_Project.Locker
 from Locker_Project import CMD_ScanInput, CMD_Thread, CMD_Process, Func, Locker, adafruit_fingerprint
-import blynklib
+#import blynklib
 
-Blynk_Auth= 'sUo9-hDo-8_PfJjt6UCBb4J8Pt_mWVec'
-blynk= blynklib.Blynk(Blynk_Auth)
-WRITE_EVENT_PRINT_MSG = "[WRITE_VIRTUAL_PIN_EVENT] Pin: V{} Value: '{}'"
+# Blynk_Auth= 'sUo9-hDo-8_PfJjt6UCBb4J8Pt_mWVec'
+# blynk= blynklib.Blynk(Blynk_Auth)
+# WRITE_EVENT_PRINT_MSG = "[WRITE_VIRTUAL_PIN_EVENT] Pin: V{} Value: '{}'"
 
 
 host=''
@@ -156,8 +156,6 @@ def get_default_gateway_linux():
                 # If not default route or not RTF_GATEWAY, skip it
                 continue
             return socket.inet_ntoa(struct.pack("<L", int(fields[2], 16)))
-def Notify(value):
-    blynk.notify(value)
 
 # while 1:
 #     object=get_default_gateway_linux()
@@ -248,11 +246,11 @@ def Run():
         for t in threamain:
             t.start()
 
-        while 1:
-            if Func.is_connected():
-                blynk.run()
-            else:
-                time.sleep(5)
+        # while 1:
+        #     if Func.is_connected():
+        #         blynk.run()
+        #     else:
+        #         time.sleep(5)
 
         #exit_event.set()
         # while 1:
