@@ -156,7 +156,7 @@ class CMD_Process(threading.Thread):
                                                 i.setDaemon(True)
                                             except Exception as e:
                                                 print(str(e),i.name)
-                                print(self.ListThread)
+
                                 t4.start()
 
                                 t4.join()
