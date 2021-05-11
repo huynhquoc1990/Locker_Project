@@ -11,7 +11,6 @@ import base64
 import threading
 from io import BytesIO
 from digitalio import DigitalInOut
-import Locker_Project.Locker
 from Locker_Project import CMD_ScanInput, CMD_Thread, CMD_Process, Func, Locker, adafruit_fingerprint
 #import blynklib
 
@@ -167,6 +166,11 @@ def Check_Connected(lstthreadstop):
 
     pass
 
+
+
+version='0.6.1'
+
+
 def Run():
     try:
         Connect_Device()
@@ -180,8 +184,12 @@ def Run():
                     with socket.socket(socket.AF_INET, socket.SOCK_STREAM)as Sk:
                         Sk.settimeout(5)
                         Sk.connect((host, Port))
-                        Sk.close()
                         print('tim ra host=',host)
+                        dta1=bytes(Func.TaiCauTruc('123456','message',version),'utf-8')
+                        size=len(dta1)
+                        Sk.sendall(size.to_bytes(4,byteorder='big'))
+                        Sk.sendall(dta1)
+                        Sk.close()
                         check=True
                         break
                 except Exception as e:
@@ -264,3 +272,9 @@ def Run():
 
     except Exception as e:
         print('Connect Mysql Error:',str(e))
+
+try:
+    if __name__ == '__main__':
+        Run()
+except Exception as e:
+    print(str(e))
