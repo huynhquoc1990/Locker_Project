@@ -168,7 +168,7 @@ def Check_Connected(lstthreadstop):
 
 
 
-version='0.6.1'
+version='0.6.3'
 
 
 def Run():
@@ -185,14 +185,18 @@ def Run():
                         Sk.settimeout(5)
                         Sk.connect((host, Port))
                         print('tim ra host=',host)
-                        dta1=bytes(Func.TaiCauTruc('123456','message',version),'utf-8')
-                        size=len(dta1)
+                        chuoi1 = '<id>12121</id><type>message</type><data>0.6.5</data>'
+                        chuoi1 = chuoi1.encode('utf-8')
+                        size = len(chuoi1)
+                        print(chuoi1)
                         Sk.sendall(size.to_bytes(4,byteorder='big'))
-                        Sk.sendall(dta1)
+                        Sk.sendall(chuoi1)
                         Sk.close()
+                        print('Goi version Ok')
                         check=True
                         break
                 except Exception as e:
+                    Sk.close()
                     print(str(e))
             time.sleep(1)
 
