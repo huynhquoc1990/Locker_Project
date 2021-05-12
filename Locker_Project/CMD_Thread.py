@@ -10,7 +10,7 @@ lstip=[]
 
 class Producer(threading.Thread):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.settimeout(60)
+    sock.settimeout(5)
     def __init__(self,Cmd,condition,host,Port,exitEvent,lstthreadStop):
         threading.Thread.__init__(self)
         self.Cmd=Cmd
@@ -104,7 +104,7 @@ class Producer(threading.Thread):
                     if check==True:
                         self.sock.close()
                         self.sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-                        self.sock.settimeout(60)
+                        self.sock.settimeout(5)
                         try:
                             self.sock.connect((self.Host,self.Port))
 

@@ -184,16 +184,20 @@ def Run():
                     with socket.socket(socket.AF_INET, socket.SOCK_STREAM)as Sk:
                         Sk.settimeout(5)
                         Sk.connect((host, Port))
-                        print('tim ra host=',host)
-                        chuoi1 = '<id>12121</id><type>message</type><data>0.6.5</data>'
-                        chuoi1 = chuoi1.encode('utf-8')
-                        size = len(chuoi1)
-                        print(chuoi1)
-                        Sk.sendall(size.to_bytes(4,byteorder='big'))
-                        Sk.sendall(chuoi1)
-                        Sk.close()
-                        print('Goi version Ok')
+                        print('tim ra host!!!!!!!!!!!!!!!!!!',host)
                         check=True
+                        try:
+                            chuoi1 = '<id>12121</id><type>message</type><data>0.7.0</data>'
+                            chuoi1 = chuoi1.encode('utf-8')
+                            size = len(chuoi1)
+                            print(chuoi1)
+                            Sk.sendall(size.to_bytes(4,byteorder='big'))
+                            Sk.sendall(chuoi1)
+                            Sk.close()
+                            print('Goi version Ok')
+                        except Exception as e:
+                            print(str(e))
+                            break
                         break
                 except Exception as e:
                     Sk.close()
@@ -231,7 +235,7 @@ def Run():
                     dta = msg.decode('utf-8')
                     id = dta.split(';')[0]
                     ref = dta.split(';')[1].split('\n')[0].split('/')
-                    print(ref)
+
                     if id == '1212':
                         lstLocker = Func.Convert1(ref)
                         print(lstLocker)

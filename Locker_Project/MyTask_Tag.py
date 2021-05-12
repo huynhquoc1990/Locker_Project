@@ -20,6 +20,14 @@ class MyTask_Tag(threading.Thread):
         self._output2=output2
         self._tinhieuchot=tinhieuchot
 
+
+    @property
+    def Exit(self):
+        return self.signal
+    @Exit.setter
+    def Exit(self,signal):
+        self.signal=signal
+
     def run(self):
         valueTag = ''
         if len(self.mes)==2:
@@ -29,13 +37,14 @@ class MyTask_Tag(threading.Thread):
             times=time.time()
             if self.TypeRead=='Copen':
                 try:
-                    while (self.signal==True ):
-                        if time.time()-times>=3:
-                            self.signal=False
+                    while (self.signal==True):
+                        if time.time()-times>=30:
+                            self.Exit=False
                         uid = self.pn532.read_passive_target(timeout=0.5)
                         if uid is not None:
                             valueTag=''.join([hex(i) for i in uid])
-                            self.signal=False
+                            print(valueTag)
+                            self.Exit=False
                             lmg=2
                         self.pn532.power_down()
 
@@ -61,13 +70,14 @@ class MyTask_Tag(threading.Thread):
             times=time.time()
             if self.TypeRead=='Cused':
                 try:
-                    while (self.signal==True ):
-                        if time.time()-times>=3:
-                            self.signal=False
+                    while (self.signal==True):
+                        if time.time()-times>=30:
+                            self.Exit=False
                         uid = self.pn532.read_passive_target(timeout=0.5)
                         if uid is not None:
                             valueTag=''.join([hex(i) for i in uid])
-                            self.signal=False
+                            print(valueTag)
+                            self.Exit=False
                             lmg=2
                         self.pn532.power_down()
                         pass

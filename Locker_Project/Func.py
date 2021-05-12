@@ -49,55 +49,55 @@ def sensor_reset(finger):
         print("Unable to reset sensor!")
     print("Sensor is reset.")
 '''Lấy ảnh image từ finger, mặc định được lấy về ảnh có định dạng jpg'''
-def Get_Finger_Image(finger,signak=True):
-    """Scan fingerprint then save image to filename."""
-    times=time.time()
-    check=False
-    try:
-        while ((time.time()-times<=2) and signak==True):
-            i = finger.get_image()
-            if i == adafruit_fingerprint.OK:
-                check=True
-                break
-            if i == adafruit_fingerprint.NOFINGER:
-                print(".", end="", flush=True)
-                #blynk.notify('Read Finger: Khong Phai Dau Van Tay')
-            elif i == adafruit_fingerprint.IMAGEFAIL:
-                #blynk.notify('Imaging error')
-                print("Read Finger: Imaging error")
-                return False
-            else:
-                print("Other error")
-                #blynk.notify('Read Finger: Other error')
-                return False
-        if check==False:
-            return False
-
-        # let PIL take care of the image headers and file structure
-        from PIL import Image  # pylint: disable=import-outside-toplevel
-        img= Image.new("L", (256, 288), "white")#256, 288
-        pixeldata = img.load()
-        mask = 0b00001111
-        result = finger.get_fpdata(sensorbuffer="image")
-        x = 0
-        y = 0
-        for i in range(len(result)):
-            pixeldata[x, y] = (int(result[i]) >> 4) * 17
-            x += 1
-            pixeldata[x, y] = (int(result[i]) & mask) * 17
-            if x == 255:
-                x = 0
-                y += 1
-            else:
-                x += 1
-        buffer = BytesIO()
-        img.save(buffer,format="PNG") #Enregistre l'image dans le buffer
-        myimage = buffer.getvalue()
-        return base64.b64encode(myimage).decode('utf-8')
-    except Exception as e:
-        print('Loi Doc Van Tay',str(e))
-        #blynk.notify('Loi Doc Van Tay',str(e))
-        return False
+# def Get_Finger_Image(finger,signak=True):
+#     """Scan fingerprint then save image to filename."""
+#     times=time.time()
+#     check=False
+#     try:
+#         while ((time.time()-times<=30) and signak==True):
+#             i = finger.get_image()
+#             if i == adafruit_fingerprint.OK:
+#                 check=True
+#                 break
+#             if i == adafruit_fingerprint.NOFINGER:
+#                 print(".", end="", flush=True)
+#                 #blynk.notify('Read Finger: Khong Phai Dau Van Tay')
+#             elif i == adafruit_fingerprint.IMAGEFAIL:
+#                 #blynk.notify('Imaging error')
+#                 print("Read Finger: Imaging error")
+#                 return False
+#             else:
+#                 print("Other error")
+#                 #blynk.notify('Read Finger: Other error')
+#                 return False
+#         if check==False:
+#             return False
+#
+#         # let PIL take care of the image headers and file structure
+#         from PIL import Image  # pylint: disable=import-outside-toplevel
+#         img= Image.new("L", (256, 288), "white")#256, 288
+#         pixeldata = img.load()
+#         mask = 0b00001111
+#         result = finger.get_fpdata(sensorbuffer="image")
+#         x = 0
+#         y = 0
+#         for i in range(len(result)):
+#             pixeldata[x, y] = (int(result[i]) >> 4) * 17
+#             x += 1
+#             pixeldata[x, y] = (int(result[i]) & mask) * 17
+#             if x == 255:
+#                 x = 0
+#                 y += 1
+#             else:
+#                 x += 1
+#         buffer = BytesIO()
+#         img.save(buffer,format="PNG") #Enregistre l'image dans le buffer
+#         myimage = buffer.getvalue()
+#         return base64.b64encode(myimage).decode('utf-8')
+#     except Exception as e:
+#         print('Loi Doc Van Tay',str(e))
+#         #blynk.notify('Loi Doc Van Tay',str(e))
+#         return False
 
 def OpenLocker(*args):
     try:

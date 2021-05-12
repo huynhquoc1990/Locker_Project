@@ -3,6 +3,7 @@ import threading
 from Locker_Project import Locker,Func,MyTask_Finger,MyTask_Tag
 
 class CMD_Process(threading.Thread):
+    exit_event=threading.Event()
     def __init__(self,finger,pn532,Cmd,condition,lst_input,lstLock,exitEvent,input1,input2,output1,output2,host,Port,tinhieuchot):
         threading.Thread.__init__(self)
         self.finger=finger
@@ -44,8 +45,18 @@ class CMD_Process(threading.Thread):
                     print(self.Cmd)
                     dta=self.Cmd.pop().split(";")
                     try:
+
                         if ((dta[1]=='Fused') and dta[2]!="OK\n"):
                             try:
+                                if len(self.ListThread)>0:
+                                    k=0
+                                    for i in self.ListThread:
+                                        i.Exit=False
+                                        try:
+                                            self.ListThread.pop(k)
+                                        except Exception as e:
+                                            print(str(e))
+                                        k+=1
                                 t1=MyTask_Finger.MyTask_Finger(finger=self.finger,mes=dta,
                                                                namefileImg="fingerprint.jpg", lstInput=self.lstinput,
                                                                lstLock=self.lstLock, TypeReader=dta[1],
@@ -54,22 +65,23 @@ class CMD_Process(threading.Thread):
                                                                host=self.host,Port=self.Port, tinhieuchot=self.tinhieuchot)
 
                                 self.ListThread.append(t1)
-                                if len(self.ListThread)>0:
-                                    for i in self.ListThread:
-                                        if i.name!=t1.name and i.isAlive()==True:
-                                            i.signal=False
-                                            try:
-                                                i.setDaemon(True)
-                                            except Exception as e:
-                                                print(str(e))
-                                # print(self.ListThread)
+                                print(len(self.ListThread))
                                 t1.start()
-                                t1.join()
+                                # t1.join()
                             except Exception as e:
                                 #self._blynk.notify('Fused Error: '+ str(e))
                                 print(str(e))
                         if ((dta[1]=='Cused') and dta[2]!="OK\n"):
                             try:
+                                if len(self.ListThread)>0:
+                                    k=0
+                                    for i in self.ListThread:
+                                        i.Exit=False
+                                        try:
+                                            self.ListThread.pop(k)
+                                        except Exception as e:
+                                            print(str(e))
+                                        k+=1
                                 t2=MyTask_Tag.MyTask_Tag(
                                     pn532=self.pn532,mes=dta
                                     ,lstInput=self.lstinput,lstLock= self.lstLock
@@ -78,21 +90,10 @@ class CMD_Process(threading.Thread):
                                     output1=self._output1, output2=self._output2, tinhieuchot=self.tinhieuchot
                                     )
                                 self.ListThread.append(t2)
-                                if len(self.ListThread)>0:
-
-                                    for i in self.ListThread:
-                                        if i.name!=t2.name and i.isAlive()==True:
-                                            i.signal=False
-                                            try:
-                                                i.setDaemon(True)
-                                            except Exception as e:
-                                                print(str(e))
-
-
-                                # print(self.ListThread)
+                                print(len(self.ListThread))
                                 t2.start()
 
-                                t2.join()
+                                # t2.join()
                             except Exception as e:
                                 #self._blynk.notify('Cused Error: ' + str(e))
                                 print(str(e))
@@ -107,6 +108,15 @@ class CMD_Process(threading.Thread):
                             pass
                         if (dta[1]=='Fopen\n'):#dta[1]=='Fopen\n' or
                             try:
+                                if len(self.ListThread)>0:
+                                    k=0
+                                    for i in self.ListThread:
+                                        i.Exit=False
+                                        try:
+                                            self.ListThread.pop(k)
+                                        except Exception as e:
+                                            print(str(e))
+                                        k+=1
                                 t3=MyTask_Finger.MyTask_Finger(finger=self.finger
                                                                 ,mes=dta,
                                                                namefileImg="fingerprint.jpg",
@@ -121,22 +131,23 @@ class CMD_Process(threading.Thread):
                                                                Port=self.Port,
                                                                tinhieuchot=self.tinhieuchot)
                                 self.ListThread.append(t3)
-                                if len(self.ListThread)>0:
-                                    for i in self.ListThread:
-                                        if i.name!=t3.name and i.isAlive()==True:
-                                            i.signal=False
-                                            try:
-                                                i.setDaemon(True)
-                                            except Exception as e:
-                                                print(str(e))
-                                # print(self.ListThread)
+                                print(len(self.ListThread))
                                 t3.start()
-                                t3.join()
+                                # t3.join()
                             except Exception as e:
                                 #self._blynk.notify('Fopen Error: ' + str(e))
                                 print(str(e))
                         if (dta[1]=='Copen\n'):
                             try:
+                                if len(self.ListThread)>0:
+                                    k=0
+                                    for i in self.ListThread:
+                                        i.Exit=False
+                                        try:
+                                            self.ListThread.pop(k)
+                                        except Exception as e:
+                                            print(str(e))
+                                        k+=1
                                 t4=MyTask_Tag.MyTask_Tag(
                                     pn532=self.pn532,
                                     mes=dta,
@@ -148,24 +159,24 @@ class CMD_Process(threading.Thread):
                                     output1=self._output1,output2=self._output2,tinhieuchot=self.tinhieuchot
                                     )
                                 self.ListThread.append(t4)
-                                if len(self.ListThread)>0:
-                                    for i in self.ListThread:
-                                        if i.name!=t4.name and i.isAlive()==True:
-                                            i.signal=False
-                                            try:
-                                                i.setDaemon(True)
-                                            except Exception as e:
-                                                print(str(e),i.name)
-
+                                print(len(self.ListThread))
                                 t4.start()
-
-                                t4.join()
+                                #t4.join()
                             except Exception as e:
                                 #self._blynk.notify('Copen Error: ' + str(e))
                                 print(str(e))
                         if (dta[1]=='Pused'):
                             print(dta[1])
                             try:
+                                if len(self.ListThread)>0:
+                                    k=0
+                                    for i in self.ListThread:
+                                        i.Exit=False
+                                        try:
+                                            self.ListThread.pop(k)
+                                        except Exception as e:
+                                            print(str(e))
+                                        k+=1
                                 self.lstLock.acquire()
                                 id=dta[2].split('\n')[0]
                                 sic1={id:1}
@@ -184,6 +195,15 @@ class CMD_Process(threading.Thread):
                         if dta[1]=='Dooropen':
                             print(dta[1])
                             try:
+                                if len(self.ListThread)>0:
+                                    k=0
+                                    for i in self.ListThread:
+                                        i.Exit=False
+                                        try:
+                                            self.ListThread.pop(k)
+                                        except Exception as e:
+                                            print(str(e))
+                                        k+=1
                                 self.lstLock.acquire()
                                 id=dta[2].split('\n')[0]
                                 sic1={id:0}
@@ -200,13 +220,22 @@ class CMD_Process(threading.Thread):
                                 #self._blynk.notify('Dooropen Error: ' + str(e))
                                 print(str(e))
                         if dta[1]=='FDK\n':#FDK\n
-                            print(dta[1])
-                            if Func.save_fingerprint_image(dta,self.host,self.Port,self.finger):
-                                print('finshed')
-                                #self._blynk.notify('Dang ky van tay moi thanh cong')
-                            else:
-                                print("Failed to save fingerprint image")
-                                #self._blynk.notify('Failed to save fingerprint image')
+                            if len(self.ListThread)>0:
+                                k=0
+                                for i in self.ListThread:
+                                    i.Exit=False
+                                    try:
+                                        self.ListThread.pop(k)
+                                    except Exception as e:
+                                        print(str(e))
+                                    k+=1
+                            Finger_sign=MyTask_Finger.MyTask_Finger(finger=self.finger
+                                                                ,mes=dta,namefileImg="fingerprint.jpg",
+                                                               lstInput= self.lstinput,lstLock= self.lstLock,TypeReader= dta[1].split("\n")[0],
+                                                               input1=self._input1,input2=self._input2,output1=self._output1, output2=self._output2,
+                                                               host=self.host,Port=self.Port,tinhieuchot=self.tinhieuchot)
+                            self.ListThread.append(Finger_sign)
+                            Finger_sign.start()
                         break
                     except Exception as e:
                         print('Main Erro: ',str(e))
