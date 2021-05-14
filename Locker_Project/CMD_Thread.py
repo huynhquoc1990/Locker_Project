@@ -44,6 +44,7 @@ class Producer(threading.Thread):
         print(threadmain)
         self.sock.sendall(size.to_bytes(4,byteorder='big'))
         self.sock.sendall(threadmain)
+
         while 1:
             time.sleep(0.5)
             try:

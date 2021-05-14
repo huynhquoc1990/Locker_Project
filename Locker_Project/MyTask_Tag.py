@@ -4,9 +4,8 @@ import time
 from Locker_Project import Func
 
 class MyTask_Tag(threading.Thread):
-    def __init__(self,pn532,mes,lstInput,lstLock,TypeReader,host,Port,input1,input2,output1,output2,tinhieuchot,Pn532):
+    def __init__(self,mes,lstInput,lstLock,TypeReader,host,Port,input1,input2,output1,output2,tinhieuchot,Pn532):
         threading.Thread.__init__(self)
-        self.pn532=pn532
         self.signal=True
         self.mes=mes
         self.lstInput=lstInput
@@ -48,13 +47,13 @@ class MyTask_Tag(threading.Thread):
                     while (self.signal==True):
                         if time.time()-times>=30:
                             self.Exit=False
-                        uid = self.pn532.read_passive_target(timeout=0.5)
+                        uid = self._Reader.read_passive_target(timeout=0.5)
                         if uid is not None:
                             valueTag=''.join([hex(i) for i in uid])
                             print(valueTag)
                             self.Exit=False
                             lmg=2
-                        self.pn532.power_down()
+                        self._Reader.power_down()
 
                     if lmg==2 and valueTag!='':
                         try:
@@ -82,13 +81,13 @@ class MyTask_Tag(threading.Thread):
                     while (self.signal==True):
                         if time.time()-times>=30:
                             self.Exit=False
-                        uid = self.pn532.read_passive_target(timeout=0.5)
+                        uid = self._Reader.read_passive_target(timeout=0.5)
                         if uid is not None:
                             valueTag=''.join([hex(i) for i in uid])
                             print(valueTag)
                             self.Exit=False
                             lmg=2
-                        self.pn532.power_down()
+                        self._Reader.power_down()
                         pass
 
                     if lmg==2 and valueTag!='':
@@ -101,25 +100,6 @@ class MyTask_Tag(threading.Thread):
                                 sock11.sendall(dta1)
                                 del dta1
                                 sock11.close()
-                                # buff=sock11.recv(1024)
-                                # dk1=buff.decode('utf-8').split(";")[2]
-                                # if dk1=='OK\n':
-                                #     self.listLock.acquire()
-                                #     id=value.split('\n')[0]
-                                #     sic1={id:1}
-                                #     Func.UpdateDict(sic1,self.lstInput)
-                                #     self.listLock.release()
-                                #     #self._blynk.notify("Tu {} duoc kich hoat".format(id))
-                                #     if int(value)>16:
-                                #         self._output2[int(value)-17].value=True
-                                #     else:
-                                #         self._output1[int(value)-1].value=True
-                                #     t1=threading.Thread(target=Func.CloseLocker,args=[self.mes,self.host,self.Port,self._output1,self._output2,self._input1,self._input2,self._tinhieuchot])
-                                #     t1.start()
-                                # else:
-                                #     print('Kiem tra lai the')
-                                #     #self._blynk.notify('Kiem tra lai the')
-                                #     sock11.close()
                         except Exception as e:
                             sock11.close()
                             print("MyTask_Tag1:",str(e))

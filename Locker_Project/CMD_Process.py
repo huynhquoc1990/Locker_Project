@@ -46,24 +46,18 @@ class CMD_Process(threading.Thread):
                     print(self.Cmd)
                     dta=self.Cmd.pop().split(";")
                     try:
-                        if dta[1]=='message':
-                            print('Nhan duoc tu Server: ',dta[2])
-                            t0=Test_Send_Dta.Test_Send_Dta(self.host,self.Port,Func.text)
-                            t0.start()
-                            break
-                            pass
-
-                        if((dta[1]=='Fused' or dta[1]=='Cused') and dta[2]=="OK\n"):
-                            self.listLock.acquire()
-                            id=dta[0]
+                        if((dta[1]=='Fused' or dta[1]=='Cused') and dta[2]=="OK"):
+                            self.lstLock.acquire()
+                            id=dta[3].split('\n')[0]
+                            print('id=',id)
                             sic1={id:1}
-                            Func.UpdateDict(sic1,self.lstInput)
-                            self.listLock.release()
+                            Func.UpdateDict(sic1,self.lstinput)
+                            self.lstLock.release()
                             #self._blynk.notify("Tu {} duoc kich hoat".format(id))
-                            if int(value)>16:
-                                self._output2[int(value)-17].value=True
+                            if int(dta[3])>16:
+                                self._output2[int(dta[3])-17].value=True
                             else:
-                                self._output1[int(value)-1].value=True
+                                self._output1[int(dta[3])-1].value=True
                             t10=threading.Thread(target=Func.CloseLocker,args=[self.mes,self.host,self.Port,self._output1,self._output2,self._input1,self._input2,self._tinhieuchot])
                             t10.start()
                             break
@@ -92,7 +86,7 @@ class CMD_Process(threading.Thread):
                                 # t1.join()
                             except Exception as e:
                                 #self._blynk.notify('Fused Error: '+ str(e))
-                                print(str(e))
+                                print('0',str(e))
                         if ((dta[1]=='Cused') and dta[2]!="OK\n"):
                             try:
                                 if len(self.ListThread)>0:
@@ -106,11 +100,11 @@ class CMD_Process(threading.Thread):
                                             print(str(e))
                                         k+=1
                                 t2=MyTask_Tag.MyTask_Tag(
-                                    pn532=self.pn532,mes=dta
+                                    mes=dta
                                     ,lstInput=self.lstinput,lstLock= self.lstLock
                                     ,TypeReader= dta[1], host=self.host, Port=self.Port,
                                     input1=self._input1, input2=self._input2,
-                                    output1=self._output1, output2=self._output2, tinhieuchot=self.tinhieuchot
+                                    output1=self._output1, output2=self._output2, tinhieuchot=self.tinhieuchot,Pn532=self.pn532
                                     )
                                 self.ListThread.append(t2)
                                 print(len(self.ListThread))
@@ -119,7 +113,7 @@ class CMD_Process(threading.Thread):
                                 # t2.join()
                             except Exception as e:
                                 #self._blynk.notify('Cused Error: ' + str(e))
-                                print(str(e))
+                                print('1',str(e))
                         if (dta[1]=='Cancel'):
                             print(dta[1])
                             self.lstLock.acquire()
@@ -162,7 +156,7 @@ class CMD_Process(threading.Thread):
                                 # t3.join()
                             except Exception as e:
                                 #self._blynk.notify('Fopen Error: ' + str(e))
-                                print(str(e))
+                                print('2',str(e))
                         if (dta[1]=='Copen\n'):
                             try:
                                 if len(self.ListThread)>0:
@@ -175,14 +169,13 @@ class CMD_Process(threading.Thread):
                                             print(str(e))
                                         k+=1
                                 t4=MyTask_Tag.MyTask_Tag(
-                                    pn532=self.pn532,
                                     mes=dta,
                                     lstInput= self.lstinput,
                                     lstLock= self.lstLock,
                                     TypeReader= dta[1].split("\n")[0],
                                     host=self.host,Port=self.Port,
                                     input1=self._input1,input2=self._input2,
-                                    output1=self._output1,output2=self._output2,tinhieuchot=self.tinhieuchot
+                                    output1=self._output1,output2=self._output2,tinhieuchot=self.tinhieuchot,Pn532=self.pn532
                                     )
                                 self.ListThread.append(t4)
                                 print(len(self.ListThread))
@@ -268,6 +261,7 @@ class CMD_Process(threading.Thread):
                         break
                     except Exception as e:
                         print('Main Erro: ',str(e))
+
                 self.condition.wait()
             self.condition.release()
     def __del__(self):

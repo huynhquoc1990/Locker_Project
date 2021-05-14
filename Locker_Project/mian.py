@@ -41,14 +41,15 @@ reset_pin = DigitalInOut(board.CE1)
 pn532 = PN532_SPI(spi, cs_pin, reset=reset_pin,debug=False)
 
 sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-
 exit_event=threading.Event()
 
 Danhsachtu=[] # chứa và quản lý danh sách tủ
 uart = serial.Serial("/dev/ttyS0", baudrate=528000, timeout=1)#489600  528000
-
-finger = adafruit_fingerprint.Adafruit_Fingerprint(uart)
-
+try:
+    finger = adafruit_fingerprint.Adafruit_Fingerprint(uart)
+except Exception as e:
+    print('Khoi tao Van Tay bị Lỗi',str(e))
+    finger=None
 def Connect_Device():
     try:
         lstI2C=i2c.scan()
@@ -171,9 +172,8 @@ def Check_Connected(lstthreadstop):
 
 
 version='0.6.3'
-
-
 def Run():
+    global lstLocker
     try:
         Connect_Device()
         check=False
@@ -183,71 +183,48 @@ def Run():
             for i in lstip:
                 host=i
                 try:
-                    with socket.socket(socket.AF_INET, socket.SOCK_STREAM)as Sk:
-                        Sk.settimeout(5)
-                        Sk.connect((host, Port))
-                        print('tim ra host!!!!!!!!!!!!!!!!!!',host)
+                    sock.connect((host, Port))
+                    print('tim ra host!!!!!!!!!!!!!!!!!!',host)
+
+                    try:
+                        threadmain = '<id>121</id><type>socket</type><data>main</data>'
+                        threadmain = threadmain.encode('utf-8')
+                        size1 = len(threadmain)
+                        sock.sendall(size1.to_bytes(4,byteorder='big'))
+                        sock.sendall(threadmain)
+                        time.sleep(0.1)
+
+                        chuoi1 = '<id>12121</id><type>message</type><data>0.8.0</data>'
+                        chuoi1 = chuoi1.encode('utf-8')
+                        size2 = len(chuoi1)
+                        sock.sendall(size2.to_bytes(4,byteorder='big'))
+                        sock.sendall(chuoi1)
+                        time.sleep(0.1)
+
+                        chuoi2 = '<id>1212</id><type>getdata</type><data>statusdoor</data>'
+                        chuoi2 = chuoi2.encode('utf-8')
+                        size2 = len(chuoi2)
+                        sock.sendall(size2.to_bytes(4, byteorder='big'))
+                        sock.sendall(chuoi2)
+
+                        msg = sock.recv(1024)
+                        dta = msg.decode('utf-8')
+                        id = dta.split(';')[0]
+                        ref = dta.split(';')[1].split('\n')[0].split('/')
+                        if id == '1212':
+                            lstLocker = Func.Convert1(ref)
+                            print(lstLocker)
+                        sock.close()
+                        print('Goi version Ok')
                         check=True
-                        try:
-                            chuoi1 = '<id>12121</id><type>message</type><data>0.7.4</data>'
-                            chuoi1 = chuoi1.encode('utf-8')
-                            size = len(chuoi1)
-                            print(chuoi1)
-                            Sk.sendall(size.to_bytes(4,byteorder='big'))
-                            Sk.sendall(chuoi1)
-                            Sk.close()
-                            print('Goi version Ok')
-                        except Exception as e:
-                            print(str(e))
-                            break
-                        break
+                    except Exception as e:
+                        print(str(e))
+                    break
                 except Exception as e:
-                    Sk.close()
+                    sock.close()
                     print(str(e))
             time.sleep(1)
-
-        # myip = Func.Get_my_ip().split('.')
-        # for i in range(1, 256):
-        #     curr_ip = myip[0] + '.' + myip[1] + '.' + myip[2] + '.' + str(i)
-        #     scan_result = Func.Scan(curr_ip)
-        #     if scan_result != []:
-        #         print(scan_result[0]['ip'] + "\t\t" + scan_result[0]['mac'])
-        #         host=scan_result[0]['ip']
-        #         try:
-        #             with socket.socket(socket.AF_INET,socket.SOCK_STREAM)as Sk:
-        #                 Sk.settimeout(5)
-        #                 Sk.connect((host, Port))
-        #                 Sk.close()
-        #                 print('tim ra host=',host)
-        #                 check=True
-        #                 break
-        #         except Exception as e:
-        #             print(str(e))
-        #             continue
-        chuoi = '<id>1212</id><type>getdata</type><data>statusdoor</data>'
-        chuoi = chuoi.encode('utf-8')
-        size = len(chuoi)
-        while 1:
-            try:
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as scok112:
-                    scok112.connect((host, Port))
-                    scok112.sendall(size.to_bytes(4, byteorder='big'))
-                    scok112.sendall(chuoi)
-                    msg = scok112.recv(1024)
-                    dta = msg.decode('utf-8')
-                    id = dta.split(';')[0]
-                    ref = dta.split(';')[1].split('\n')[0].split('/')
-
-                    if id == '1212':
-                        lstLocker = Func.Convert1(ref)
-                        print(lstLocker)
-                    scok112.close()
-                    break
-            except Exception as e:
-                scok112.close()
-                print('Chưa lấy được dữ liệu từ Server')
-        time.sleep(2)
-
+        time.sleep(1)
         condition=threading.Condition()
         lstLock=threading.Lock()
         fingerT=CMD_Process.CMD_Process(finger=finger,pn532=pn532, Cmd=lstID,condition=condition,

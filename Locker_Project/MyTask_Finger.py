@@ -36,22 +36,24 @@ class MyTask_Finger(threading.Thread):
     @property
     def Finger(self):
         return self.finger
+
     @Finger.setter
+    def Finger(self,finger):
+        self.finger=finger
+
     @property
     def Uart(self):
         return self.uart
     @Uart.setter
     def Uart(self,uart):
         self.uart=uart
-    def Finger(self,finger):
-        self.finger=finger
+
 
     def Get_Finger_Image(self):
         """Scan fingerprint then save image to filename."""
         times=time.time()
         check=False
         try:
-            self.uart.open()
             while ((time.time()-times<=30)):
                 if self.signal==False:
 
@@ -69,6 +71,7 @@ class MyTask_Finger(threading.Thread):
                 else:
                     print("Other error")
                     return False
+                time.sleep(0.5)
             if check==False:
                 return False
 
