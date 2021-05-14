@@ -46,7 +46,9 @@ exit_event=threading.Event()
 
 Danhsachtu=[] # chứa và quản lý danh sách tủ
 uart = serial.Serial("/dev/ttyS0", baudrate=528000, timeout=1)#489600  528000
+
 finger = adafruit_fingerprint.Adafruit_Fingerprint(uart)
+
 def Connect_Device():
     try:
         lstI2C=i2c.scan()
@@ -187,7 +189,7 @@ def Run():
                         print('tim ra host!!!!!!!!!!!!!!!!!!',host)
                         check=True
                         try:
-                            chuoi1 = '<id>12121</id><type>message</type><data>0.7.0</data>'
+                            chuoi1 = '<id>12121</id><type>message</type><data>0.7.4</data>'
                             chuoi1 = chuoi1.encode('utf-8')
                             size = len(chuoi1)
                             print(chuoi1)
@@ -252,7 +254,7 @@ def Run():
                                         lst_input=lstLocker,lstLock=lstLock,
                                         exitEvent=exit_event,input1=lstInput1,
                                         input2=lstInput2,output1=lstOutput1,output2=lstOutput2,
-                                        tinhieuchot=tinhieuchot,host=host,Port=Port)
+                                        tinhieuchot=tinhieuchot,host=host,Port=Port,uart=uart)
         threamain.append(fingerT)
         # scan = CMD_ScanInput.ScanInput(lstinput=lstLocker, lstlock=lstLock,
         #                                lstID=lst,exitEvent=exit_event,

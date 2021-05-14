@@ -2,13 +2,17 @@ import socket
 import threading
 import time
 from io import BytesIO
+
+import serial
+
 from Locker_Project import adafruit_fingerprint
 from Locker_Project import Func
 import base64
 
 class MyTask_Finger(threading.Thread):
-    def __init__(self,finger,mes,namefileImg,lstInput,lstLock,TypeReader,host,Port,input1,input2,output1,output2,tinhieuchot):
+    def __init__(self,finger,mes,namefileImg,lstInput,lstLock,TypeReader,host,Port,input1,input2,output1,output2,tinhieuchot,uart):
         threading.Thread.__init__(self)
+        self.uart=uart
         self.finger=finger
         self.signal=True
         self.namefileImg=namefileImg
@@ -29,28 +33,42 @@ class MyTask_Finger(threading.Thread):
     @Exit.setter
     def Exit(self,signal):
         self.signal=signal
+    @property
+    def Finger(self):
+        return self.finger
+    @Finger.setter
+    @property
+    def Uart(self):
+        return self.uart
+    @Uart.setter
+    def Uart(self,uart):
+        self.uart=uart
+    def Finger(self,finger):
+        self.finger=finger
 
     def Get_Finger_Image(self):
         """Scan fingerprint then save image to filename."""
         times=time.time()
         check=False
         try:
-            while ((time.time()-times<=30) and self.signal==True):
+            self.uart.open()
+            while ((time.time()-times<=30)):
+                if self.signal==False:
+
+                    return False
                 i = self.finger.get_image()
                 if i == adafruit_fingerprint.OK:
                     check=True
                     break
+
                 if i == adafruit_fingerprint.NOFINGER:
                     print(".", end="", flush=True)
-                    #blynk.notify('Read Finger: Khong Phai Dau Van Tay')
-                # elif i == adafruit_fingerprint.IMAGEFAIL:
-                #     #blynk.notify('Imaging error')
-                #     print("Read Finger: Imaging error")
-                #     return False
-                # else:
-                #     print("Other error")
-                #     #blynk.notify('Read Finger: Other error')
-                #     return False
+                elif i == adafruit_fingerprint.IMAGEFAIL:
+                    print("Read Finger: Imaging error")
+                    return False
+                else:
+                    print("Other error")
+                    return False
             if check==False:
                 return False
 
@@ -77,6 +95,8 @@ class MyTask_Finger(threading.Thread):
             return base64.b64encode(myimage).decode('utf-8')
         except Exception as e:
             print('Loi Doc Van Tay',str(e))
+            self.Uart=serial.Serial("/dev/ttyS0", baudrate=528000, timeout=1)#489600  528000
+            self.Finger=adafruit_fingerprint.Adafruit_Fingerprint(self.uart)
             #blynk.notify('Loi Doc Van Tay',str(e))
             return False
     def run(self):
@@ -117,7 +137,7 @@ class MyTask_Finger(threading.Thread):
                 except Exception as e:
                     print("MyTask_Finger:",str(e))
                     #self._blynk.notify('Fused MyTask_Finger: ' + str(e))
-                    Func.sensor_reset(self.finger)
+                    # Func.sensor_reset(self.finger)
         if len(self.mes)==3:
             id,typevalue,value= [i for i in self.mes]
             times=time.time()
@@ -134,27 +154,28 @@ class MyTask_Finger(threading.Thread):
                         sock1.sendall(size.to_bytes(4,byteorder='big'))
                         sock1.sendall(dta1)
                         del dta1
-                        buff=sock1.recv(1024)
-                        dk1=buff.decode('utf-8').split(";")[2]
-                        if dk1=='OK\n':
-                            self.listLock.acquire()
-                            id=value.split('\n')[0]
-                            sic1={id:1}
-                            Func.UpdateDict(sic1,self.lstInput)
-                            self.listLock.release()
-                            #self._blynk.notify("Tu {} duoc kich hoat".format(id))
-                            if int(value)>16:
-                                self._output2[int(value)-17].value=True
-                            else:
-                                self._output1[int(value)-1].value=True
-                            t1=threading.Thread(target=Func.CloseLocker,args=[self.mes,self.host,self.Port,self._output1,self._output2,self._input1,self._input2,self._tinhieuchot])
-
-                            t1.start()
-                        else:
-                            print('Van Tay Chưa Đúng')
-                            #self._blynk.notify('Fused MyTask_Finger: ' + 'Van Tay Chưa Đúng')
-                            sock1.close()
+                        sock1.close()
+                        # buff=sock1.recv(1024)
+                        # dk1=buff.decode('utf-8').split(";")[2]
+                        # if dk1=='OK\n':
+                        #     self.listLock.acquire()
+                        #     id=value.split('\n')[0]
+                        #     sic1={id:1}
+                        #     Func.UpdateDict(sic1,self.lstInput)
+                        #     self.listLock.release()
+                        #     #self._blynk.notify("Tu {} duoc kich hoat".format(id))
+                        #     if int(value)>16:
+                        #         self._output2[int(value)-17].value=True
+                        #     else:
+                        #         self._output1[int(value)-1].value=True
+                        #     t1=threading.Thread(target=Func.CloseLocker,args=[self.mes,self.host,self.Port,self._output1,self._output2,self._input1,self._input2,self._tinhieuchot])
+                        #     t1.start()
+                        # else:
+                        #     print('Van Tay Chưa Đúng')
+                        #     #self._blynk.notify('Fused MyTask_Finger: ' + 'Van Tay Chưa Đúng')
+                        #     sock1.close()
                 except Exception as e:
+                    sock1.close()
                     print("MyTask_Finger:",str(e))
                     #self._blynk.notify("MyTask_Finger: "+str(e))
     def __del__(self):

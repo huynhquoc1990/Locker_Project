@@ -38,6 +38,12 @@ class Producer(threading.Thread):
     def run(self):
         check=False
         self.sock.connect((self.Host,self.Port))
+        threadmain = '<id>121</id><type>socket</type><data>main</data>'
+        threadmain = threadmain.encode('utf-8')
+        size = len(threadmain)
+        print(threadmain)
+        self.sock.sendall(size.to_bytes(4,byteorder='big'))
+        self.sock.sendall(threadmain)
         while 1:
             time.sleep(0.5)
             try:
@@ -94,6 +100,7 @@ class Producer(threading.Thread):
                                 Sk.connect((self.Host, self.Port))
                                 Sk.close()
                                 print('tim ra host=', self.Host)
+                                Sk.close()
                                 #self._blynk.notify('Chương trinh dang update....')
                                 for t in self.lstThread:
                                     t.Host = self.Host
@@ -107,9 +114,14 @@ class Producer(threading.Thread):
                         self.sock.settimeout(5)
                         try:
                             self.sock.connect((self.Host,self.Port))
-
                             check=False
                             print('Connected')
+                            threadmain = '<id>121</id><type>socket</type><data>main</data>'
+                            threadmain = threadmain.encode('utf-8')
+                            size = len(threadmain)
+                            print(threadmain)
+                            self.sock.sendall(size.to_bytes(4,byteorder='big'))
+                            self.sock.sendall(threadmain)
                             #self._blynk.notify('Connected')
                         except Exception as e:
                             print('Mat ket noi',str(e))

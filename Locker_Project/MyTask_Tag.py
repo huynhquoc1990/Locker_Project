@@ -4,7 +4,7 @@ import time
 from Locker_Project import Func
 
 class MyTask_Tag(threading.Thread):
-    def __init__(self,pn532,mes,lstInput,lstLock,TypeReader,host,Port,input1,input2,output1,output2,tinhieuchot):
+    def __init__(self,pn532,mes,lstInput,lstLock,TypeReader,host,Port,input1,input2,output1,output2,tinhieuchot,Pn532):
         threading.Thread.__init__(self)
         self.pn532=pn532
         self.signal=True
@@ -19,6 +19,14 @@ class MyTask_Tag(threading.Thread):
         self._output1=output1
         self._output2=output2
         self._tinhieuchot=tinhieuchot
+        self._Reader=Pn532
+
+    @property
+    def Reader(self):
+        return self._Reader
+    @Reader.setter
+    def Reader(self,pn532):
+        self._Reader=pn532
 
 
     @property
@@ -59,6 +67,7 @@ class MyTask_Tag(threading.Thread):
                                 sock.close()
                                 del dta1
                         except Exception as e:
+                            sock.close()
                             print("MyTask_Tag:", str(e))
                             # self._blynk.notify('MyTask_Tag: ' + str(e))
                 except Exception as e:
@@ -91,30 +100,33 @@ class MyTask_Tag(threading.Thread):
                                 sock11.sendall(size.to_bytes(4,byteorder='big'))
                                 sock11.sendall(dta1)
                                 del dta1
-                                buff=sock11.recv(1024)
-                                dk1=buff.decode('utf-8').split(";")[2]
-                                if dk1=='OK\n':
-                                    self.listLock.acquire()
-                                    id=value.split('\n')[0]
-                                    sic1={id:1}
-                                    Func.UpdateDict(sic1,self.lstInput)
-                                    self.listLock.release()
-                                    #self._blynk.notify("Tu {} duoc kich hoat".format(id))
-                                    if int(value)>16:
-                                        self._output2[int(value)-17].value=True
-                                    else:
-                                        self._output1[int(value)-1].value=True
-                                    t1=threading.Thread(target=Func.CloseLocker,args=[self.mes,self.host,self.Port,self._output1,self._output2,self._input1,self._input2,self._tinhieuchot])
-                                    t1.start()
-                                else:
-                                    print('Kiem tra lai the')
-                                    #self._blynk.notify('Kiem tra lai the')
-                                    sock11.close()
+                                sock11.close()
+                                # buff=sock11.recv(1024)
+                                # dk1=buff.decode('utf-8').split(";")[2]
+                                # if dk1=='OK\n':
+                                #     self.listLock.acquire()
+                                #     id=value.split('\n')[0]
+                                #     sic1={id:1}
+                                #     Func.UpdateDict(sic1,self.lstInput)
+                                #     self.listLock.release()
+                                #     #self._blynk.notify("Tu {} duoc kich hoat".format(id))
+                                #     if int(value)>16:
+                                #         self._output2[int(value)-17].value=True
+                                #     else:
+                                #         self._output1[int(value)-1].value=True
+                                #     t1=threading.Thread(target=Func.CloseLocker,args=[self.mes,self.host,self.Port,self._output1,self._output2,self._input1,self._input2,self._tinhieuchot])
+                                #     t1.start()
+                                # else:
+                                #     print('Kiem tra lai the')
+                                #     #self._blynk.notify('Kiem tra lai the')
+                                #     sock11.close()
                         except Exception as e:
+                            sock11.close()
                             print("MyTask_Tag1:",str(e))
                             #self._blynk.notify("MyTask_Tag1: "+str(e))
                 except Exception as e:
                     print("MyTask_Tag2:",str(e))
+
                     #self._blynk.notify("MyTask_Tag2: " + str(e))
     def __del__(self):
         print(self.name,' Đã bị xóa')
