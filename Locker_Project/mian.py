@@ -41,6 +41,8 @@ reset_pin = DigitalInOut(board.CE1)
 pn532 = PN532_SPI(spi, cs_pin, reset=reset_pin,debug=False)
 
 sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+sock.settimeout(5)
+
 exit_event=threading.Event()
 
 Danhsachtu=[] # chứa và quản lý danh sách tủ
@@ -160,105 +162,91 @@ def get_default_gateway_linux():
                 # If not default route or not RTF_GATEWAY, skip it
                 continue
             return socket.inet_ntoa(struct.pack("<L", int(fields[2], 16)))
-
-# while 1:
-#     object=get_default_gateway_linux()
-#     print(object)
-#     time.sleep(5)
-def Check_Connected(lstthreadstop):
-
-    pass
-
-
+DemVanTay=0
 
 version='0.6.3'
 def Run():
     global lstLocker
-    try:
-        Connect_Device()
-        check=False
-        while check!=True:
-            lstip= Func.get_default_gateway_linux()
-            print(lstip)
-            for i in lstip:
-                host=i
-                try:
+    Connect_Device()
+    check=False
+    while check!=True:
+        lstip= Func.get_default_gateway_linux()
+        for i in lstip:
+            host=i
+            try:
+                with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as sock:
                     sock.connect((host, Port))
+                    sock.settimeout(5)
                     print('tim ra host!!!!!!!!!!!!!!!!!!',host)
+                    threadmain = '<id>121</id><type>socket</type><data>main</data>'
+                    threadmain = threadmain.encode('utf-8')
+                    size1 = len(threadmain)
+                    sock.sendall(size1.to_bytes(4,byteorder='big'))
+                    sock.sendall(threadmain)
+                    time.sleep(1)
 
-                    try:
-                        threadmain = '<id>121</id><type>socket</type><data>main</data>'
-                        threadmain = threadmain.encode('utf-8')
-                        size1 = len(threadmain)
-                        sock.sendall(size1.to_bytes(4,byteorder='big'))
-                        sock.sendall(threadmain)
-                        time.sleep(0.1)
+                    chuoi1 = '<id>12121</id><type>message</type><data>0.8.3</data>'
+                    chuoi1 = chuoi1.encode('utf-8')
+                    size2 = len(chuoi1)
+                    sock.sendall(size2.to_bytes(4,byteorder='big'))
+                    sock.sendall(chuoi1)
+                    time.sleep(1)
 
-                        chuoi1 = '<id>12121</id><type>message</type><data>0.8.0</data>'
-                        chuoi1 = chuoi1.encode('utf-8')
-                        size2 = len(chuoi1)
-                        sock.sendall(size2.to_bytes(4,byteorder='big'))
-                        sock.sendall(chuoi1)
-                        time.sleep(0.1)
+                    chuoi2 = '<id>1212</id><type>getdata</type><data>statusdoor</data>'
+                    chuoi2 = chuoi2.encode('utf-8')
+                    size2 = len(chuoi2)
+                    sock.sendall(size2.to_bytes(4, byteorder='big'))
+                    sock.sendall(chuoi2)
 
-                        chuoi2 = '<id>1212</id><type>getdata</type><data>statusdoor</data>'
-                        chuoi2 = chuoi2.encode('utf-8')
-                        size2 = len(chuoi2)
-                        sock.sendall(size2.to_bytes(4, byteorder='big'))
-                        sock.sendall(chuoi2)
-
-                        msg = sock.recv(1024)
-                        dta = msg.decode('utf-8')
-                        id = dta.split(';')[0]
-                        ref = dta.split(';')[1].split('\n')[0].split('/')
-                        if id == '1212':
-                            lstLocker = Func.Convert1(ref)
-                            print(lstLocker)
-                        sock.close()
-                        print('Goi version Ok')
-                        check=True
-                    except Exception as e:
-                        print(str(e))
+                    msg = sock.recv(1024)
+                    dta = msg.decode('utf-8')
+                    id = dta.split(';')[0]
+                    ref = dta.split(';')[1].split('\n')[0].split('/')
+                    if id == '1212':
+                        lstLocker = Func.Convert1(ref)
+                        print(lstLocker)
+                    # sock.close()
+                    print('Goi version Ok')
+                    check=True
                     break
-                except Exception as e:
-                    sock.close()
-                    print(str(e))
-            time.sleep(1)
-        time.sleep(1)
-        condition=threading.Condition()
-        lstLock=threading.Lock()
-        fingerT=CMD_Process.CMD_Process(finger=finger,pn532=pn532, Cmd=lstID,condition=condition,
-                                        lst_input=lstLocker,lstLock=lstLock,
-                                        exitEvent=exit_event,input1=lstInput1,
-                                        input2=lstInput2,output1=lstOutput1,output2=lstOutput2,
-                                        tinhieuchot=tinhieuchot,host=host,Port=Port,uart=uart)
-        threamain.append(fingerT)
-        # scan = CMD_ScanInput.ScanInput(lstinput=lstLocker, lstlock=lstLock,
-        #                                lstID=lst,exitEvent=exit_event,
-        #                                input1=lstInput1,input2=lstInput2,
-        #                                output1=lstOutput1,output2=lstOutput2)
-        # threamain.append(scan)
-        producer = CMD_Thread.Producer(Cmd=lstID, condition=condition, host=host, Port=Port, exitEvent=exit_event,lstthreadStop=threamain)
-        threamain.append(producer)
+            except Exception as e:
+                sock.close()
+                break
+        pass
+    condition=threading.Condition()
+    lstLock=threading.Lock()
+    fingerT=CMD_Process.CMD_Process(finger=finger,pn532=pn532, Cmd=lstID,condition=condition,
+                                    lst_input=lstLocker,lstLock=lstLock,
+                                    exitEvent=exit_event,input1=lstInput1,
+                                    input2=lstInput2,output1=lstOutput1,output2=lstOutput2,
+                                    tinhieuchot=tinhieuchot,host=host,Port=Port,uart=uart)
+    threamain.append(fingerT)
+    # scan = CMD_ScanInput.ScanInput(lstinput=lstLocker, lstlock=lstLock,
+    #                                lstID=lst,exitEvent=exit_event,
+    #                                input1=lstInput1,input2=lstInput2,
+    #                                output1=lstOutput1,output2=lstOutput2)
+    # threamain.append(scan)
+    producer = CMD_Thread.Producer(Cmd=lstID, condition=condition, host=host, Port=Port, exitEvent=exit_event,lstthreadStop=threamain)
+    threamain.append(producer)
 
-        for t in threamain:
-            t.start()
-        # while 1:
-        #     for t in threamain:
-        #         if
-        # while 1:
-        #     if Func.is_connected():
-        #         blynk.run()
-        #     else:
-        #         time.sleep(5)
+    for t in threamain:
+        t.start()
+    # while 1:
+    #     for t in threamain:
+    #         if
+    # while 1:
+    #     if Func.is_connected():
+    #         blynk.run()
+    #     else:
+    #         time.sleep(5)
 
-        #exit_event.set()
-        # while 1:
-        #     time.sleep(2)
-        #     print('Exit',exit_event.is_set())
+    #exit_event.set()
+    # while 1:
+    #     time.sleep(1)
+    #     print('Solan Scan Van tay',DemVanTay)
 
-    except Exception as e:
-        print('Connect Mysql Error:',str(e))
+    #except Exception as e:
+        #print('Connect Mysql Error:',str(e))
 
 try:
     if __name__ == '__main__':

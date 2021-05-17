@@ -131,7 +131,12 @@ def OpenLocker(*args):
 
 def CloseLocker(*args):
     try:
-        id,ty,loker=[i for i in args[0]]
+        if len(args[0])==4:
+            id,ty,chek,loker=[i for i in args[0]]# doi voi truong hop mo bang the tu va Van Tay
+        else:
+            id,ty,loker=[i for i in args[0]]
+
+        print('con',id,ty,chek,loker)
         host = args[1]
         Port = args[2]
         lstOutput1 = args[3]

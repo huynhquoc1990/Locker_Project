@@ -19,7 +19,6 @@ class Producer(threading.Thread):
         self.Port=Port
         self._Exit=exitEvent
         self.lstThread=lstthreadStop
-
     @property
     def Exit(self):
         return self._Exit
@@ -107,7 +106,6 @@ class Producer(threading.Thread):
                                     t.Host = self.Host
                         except Exception as e:
                             print(str(e))
-                            #self._blynk.notify(str(e))
                     lstip.clear()
                     if check==True:
                         self.sock.close()
