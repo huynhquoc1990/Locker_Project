@@ -5,44 +5,49 @@ import time
 
 from Locker_Project import Func
 
-data=''
-lstip=[]
+data = ''
+lstip = []
+
 
 class Producer(threading.Thread):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(5)
-    def __init__(self,Cmd,condition,host,Port,exitEvent,lstthreadStop):
+
+    def __init__(self, Cmd, condition, host, Port, exitEvent, lstthreadStop):
         threading.Thread.__init__(self)
-        self.Cmd=Cmd
-        self.condition=condition
-        self.host=host
-        self.Port=Port
-        self._Exit=exitEvent
-        self.lstThread=lstthreadStop
+        self.Cmd = Cmd
+        self.condition = condition
+        self.host = host
+        self.Port = Port
+        self._Exit = exitEvent
+        self.lstThread = lstthreadStop
+
     @property
     def Exit(self):
         return self._Exit
-    @Exit.setter
-    def Exit(self,exitEvent):
-        self._Exit=exitEvent
 
+    @Exit.setter
+    def Exit(self, exitEvent):
+        self._Exit = exitEvent
 
     @property
     def Host(self):
         return self.host
+
     @Host.setter
-    def Host(self,host):
-        self.host=host
+    def Host(self, host):
+        self.host = host
 
     def run(self):
-        check=False
-        self.sock.connect((self.Host,self.Port))
+        check = False
+        self.sock.connect((self.Host, self.Port))
         threadmain = '<id>121</id><type>socket</type><data>main</data>'
         threadmain = threadmain.encode('utf-8')
         size = len(threadmain)
         print(threadmain)
-        self.sock.sendall(size.to_bytes(4,byteorder='big'))
+        self.sock.sendall(size.to_bytes(4, byteorder='big'))
         self.sock.sendall(threadmain)
+        time.sleep(1)
 
         while 1:
             time.sleep(0.5)
@@ -52,26 +57,23 @@ class Producer(threading.Thread):
                 while 1:
                     if self._Exit.is_set():
                         break
-                    full_msg=''
-                    data=self.sock.recv(1024)
-                    if len(data)>0:
-                        full_msg+=data.decode('utf-8')
-                    if len(data)<=1024 and len(data)>0:
+                    full_msg = ''
+                    data = self.sock.recv(1024)
+                    if len(data) > 0:
+                        full_msg += data.decode('utf-8')
+
+                    if len(data) <= 1024 and len(data) > 0:
                         data = full_msg.split(";")
-                        print('check nhan thong tin',data)
-                        #self._blynk.notify('check nhan thong tin ' +str(data))
-                        if data[1]=='Update\n':
-                            if Func.is_connected()==True:
+                        print('check nhan thong tin', data)
+                        if data[1] == 'Update\n':
+                            if Func.is_connected() == True:
                                 exit_event = threading.Event()
                                 exit_event.set()
                                 self._Exit.set()
                                 print('Chương trinh dang update....')
-                                #self._blynk.notify('Chương trinh dang update....')
-                                t1=threading.Thread(target=Func.Update())
+                                t1 = threading.Thread(target=Func.Update())
                                 t1.start()
                                 self.sock.close()
-                                # for i in self.lstThread:
-                                #     i.start()
                             else:
                                 print('Vui Long Kiem Tra Ket Noi internet. Thu Lai...')
                         self.condition.acquire()
@@ -79,10 +81,10 @@ class Producer(threading.Thread):
                         self.condition.notify()
                         self.condition.release()
                         pass
-                    full_msg=''
-                    if len(data)==0:
+                    full_msg = ''
+                    if len(data) == 0:
                         self.sock.close()
-                        check=True
+                        check = True
                     time.sleep(0.1)
                     pass
             except Exception as e:
@@ -90,10 +92,10 @@ class Producer(threading.Thread):
                 try:
                     lstip = Func.get_default_gateway_linux()
                     for i in lstip:
-                        if i==self.Host:
+                        if i == self.Host:
                             break
                         self.Host = i
-                        check=True
+                        check = True
                         try:
                             with socket.socket(socket.AF_INET, socket.SOCK_STREAM)as Sk:
                                 Sk.settimeout(5)
@@ -101,35 +103,37 @@ class Producer(threading.Thread):
                                 Sk.close()
                                 print('tim ra host=', self.Host)
                                 Sk.close()
-                                #self._blynk.notify('Chương trinh dang update....')
                                 for t in self.lstThread:
                                     t.Host = self.Host
                         except Exception as e:
                             print(str(e))
                     lstip.clear()
-                    if check==True:
+                    if check:
                         self.sock.close()
-                        self.sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+                        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                         self.sock.settimeout(5)
                         try:
-                            self.sock.connect((self.Host,self.Port))
-                            check=False
+                            self.sock.connect((self.Host, self.Port))
+
                             print('Connected')
                             threadmain = '<id>121</id><type>socket</type><data>main</data>'
                             threadmain = threadmain.encode('utf-8')
                             size = len(threadmain)
                             print(threadmain)
-                            self.sock.sendall(size.to_bytes(4,byteorder='big'))
+                            self.sock.sendall(size.to_bytes(4, byteorder='big'))
                             self.sock.sendall(threadmain)
-                            #self._blynk.notify('Connected')
+                            check = False
+
                         except Exception as e:
-                            print('Mat ket noi',str(e))
+                            print('Mat ket noi', str(e))
+                            check = True
                             self.sock.close()
-                            #self._blynk.notify('Mat ket noi: '+str(e))
+
                 except Exception as e:
                     print(str(e))
-                    #self._blynk.notify(str(e))
+                    check = True
                     self.sock.close()
                     continue
+
     def __del__(self):
         print('Doi tuong preducer bi xoa')

@@ -35,7 +35,7 @@
 #     """
 #     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 #     s.connect(("8.8.8.8", 80))
-#     ip = s.getsockname()[0]
+#     ip = s.getcompname()[0]
 #     print(ip)
 #     s.close()
 #     return ip
@@ -83,23 +83,29 @@
 #     return ip_listy
 import sys
 import subprocess
+
+
 def restart():
-    print ("restarting Pi")
+    print("restarting Pi")
     command = "/usr/bin/sudo /sbin/shutdown -r now"
     import subprocess
     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
-    print (output)
+    print(output)
     pass
+
+
 def Update():
     # Go Chuong trinh
-    #subprocess.check_call([sys.executable, '-m', 'pip', 'uninstall', 'Locker-Project'])
-    #print('Hoan Thanh Go chuong Trinh')
+    # subprocess.check_call([sys.executable, '-m', 'pip', 'uninstall', 'Locker-Project'])
+    # print('Hoan Thanh Go chuong Trinh')
     # implement pip as a subprocess:
     subprocess.check_call([sys.executable, '-m','pip', 'install','--upgrade','Locker-Project'])
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--upgrade', 'Locker-Project'])
     print('Hoan Thanh')
     restart()
+
+
 if __name__ == '__main__':
-    #restart()
+    # restart()
     Update()
