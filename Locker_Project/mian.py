@@ -196,12 +196,13 @@ def Run():
                     sock.sendall(threadmain)
                     time.sleep(1)
 
-                    chuoi1 = '<id>12121</id><type>message</type><data>0.8.6</data>'
+                    chuoi1 = '<id>12121</id><type>message</type><data>0.8.9</data>'
                     chuoi1 = chuoi1.encode('utf-8')
                     size2 = len(chuoi1)
                     sock.sendall(size2.to_bytes(4, byteorder='big'))
                     sock.sendall(chuoi1)
                     time.sleep(1)
+                    print('0.8.9')
 
                     chuoi2 = '<id>1212</id><type>getdata</type><data>statusdoor</data>'
                     chuoi2 = chuoi2.encode('utf-8')
