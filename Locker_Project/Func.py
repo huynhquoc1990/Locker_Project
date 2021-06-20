@@ -54,59 +54,28 @@ def sensor_reset(finger):
         print("Unable to reset sensor!")
     print("Sensor is reset.")
 
+def Open_Locker_Test(*args):
+    id, typeF, value = [i for i in args[0]]
+    host = args[1]
+    Port = args[2]
+    time.sleep(2)
+    dtan = ''
+    if int(value) > 16:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM)as Sok:
+            Sok.connect((host, Port))
+            dtan = bytes(TaiCauTruc(id, 'Dooropen', value, GetData=3), 'utf-8')
+            Sok.sendall(len(dtan).to_bytes(4, 'big'))
+            Sok.sendall(dtan)
+            Sok.close()
+    else:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as Sok:
+            Sok.connect((host, Port))
+            dtan = bytes(TaiCauTruc(id, 'Dooropen', value, GetData=3), 'utf-8')
+            Sok.sendall(len(dtan).to_bytes(4, 'big'))
+            Sok.sendall(dtan)
+            Sok.close()
+    pass
 
-'''Lấy ảnh image từ finger, mặc định được lấy về ảnh có định dạng jpg'''
-
-
-# def Get_Finger_Image(finger,signak=True):
-#     """Scan fingerprint then save image to filename."""
-#     times=time.time()
-#     check=False
-#     try:
-#         while ((time.time()-times<=30) and signak==True):
-#             i = finger.get_image()
-#             if i == adafruit_fingerprint.OK:
-#                 check=True
-#                 break
-#             if i == adafruit_fingerprint.NOFINGER:
-#                 print(".", end="", flush=True)
-#                 #blynk.notify('Read Finger: Khong Phai Dau Van Tay')
-#             elif i == adafruit_fingerprint.IMAGEFAIL:
-#                 #blynk.notify('Imaging error')
-#                 print("Read Finger: Imaging error")
-#                 return False
-#             else:
-#                 print("Other error")
-#                 #blynk.notify('Read Finger: Other error')
-#                 return False
-#         if check==False:
-#             return False
-#
-#         # let PIL take care of the image headers and file structure
-#         from PIL import Image  # pylint: disable=import-outside-toplevel
-#         img= Image.new("L", (256, 288), "white")#256, 288
-#         pixeldata = img.load()
-#         mask = 0b00001111
-#         result = finger.get_fpdata(sensorbuffer="image")
-#         x = 0
-#         y = 0
-#         for i in range(len(result)):
-#             pixeldata[x, y] = (int(result[i]) >> 4) * 17
-#             x += 1
-#             pixeldata[x, y] = (int(result[i]) & mask) * 17
-#             if x == 255:
-#                 x = 0
-#                 y += 1
-#             else:
-#                 x += 1
-#         buffer = BytesIO()
-#         img.save(buffer,format="PNG") #Enregistre l'image dans le buffer
-#         myimage = buffer.getvalue()
-#         return base64.b64encode(myimage).decode('utf-8')
-#     except Exception as e:
-#         print('Loi Doc Van Tay',str(e))
-#         #blynk.notify('Loi Doc Van Tay',str(e))
-#         return False
 
 def OpenLocker(*args):
     try:
@@ -115,13 +84,12 @@ def OpenLocker(*args):
         Port = args[2]
         lstOutput1 = args[3]
         lstOutput2 = args[4]
-        demtime = time.time()
-        time.sleep(2)
+        time.sleep(0.5)
         if int(value) > 16:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM)as Sok:
                 Sok.connect((host, Port))
                 lstOutput2[int(value) - 17].value = False
-                dtan = bytes(TaiCauTruc(id, 'Dooropen', value.split("\n")[0], GetData=3), 'utf-8')
+                dtan = bytes(TaiCauTruc(id, 'Dooropen', value, GetData=3), 'utf-8')
                 Sok.sendall(len(dtan).to_bytes(4, 'big'))
                 Sok.sendall(dtan)
                 Sok.close()
@@ -129,7 +97,7 @@ def OpenLocker(*args):
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as Sok:
                 Sok.connect((host, Port))
                 lstOutput1[int(value) - 1].value = False
-                dtan = bytes(TaiCauTruc(id, 'Dooropen', value.split("\n")[0], GetData=3), 'utf-8')
+                dtan = bytes(TaiCauTruc(id, 'Dooropen', value, GetData=3), 'utf-8')
                 Sok.sendall(len(dtan).to_bytes(4, 'big'))
                 Sok.sendall(dtan)
                 Sok.close()
@@ -139,6 +107,43 @@ def OpenLocker(*args):
     pass
 
 
+def Close_Locker_Test(*args):
+    print('Vao Chuong trinh cho dong tu')
+    if len(args[0]) == 4:
+        id, ty, chek, loker = [i for i in args[0]]  # doi voi truong hop mo bang the tu va Van Tay
+        print(args)
+    else:
+        id, ty, loker = [i for i in args[0]]  # doi voi truong hop mo bang the tu va Van Tay id, ty, loker = [i for i in args[0]]
+        print(args)
+
+    host = args[1]
+    Port = args[2]
+
+    demtime = time.time()
+    time.sleep(1)
+    dem = 0
+    while time.time() - demtime <= 30:  # chờ tín hiệu dong cua ne: Chờ 3 phut =180s
+        dem += 1
+        if int(loker) > 16:
+            if dem == 10:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as Sok:
+                    Sok.connect((host, Port))
+                    dtan = bytes(TaiCauTruc(id, 'Doorclose', loker, GetData=2), 'utf-8')
+                    Sok.sendall(len(dtan).to_bytes(4, 'big'))
+                    Sok.sendall(dtan)
+                    Sok.close()
+                    break
+        else:
+            if dem == 11:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as Sok:
+                    Sok.connect((host, Port))
+                    dtan = bytes(TaiCauTruc(id, 'Doorclose', loker, GetData=2), 'utf-8')
+                    Sok.sendall(len(dtan).to_bytes(4, 'big'))
+                    Sok.sendall(dtan)
+                    Sok.close()
+                    break
+        time.sleep(1)
+
 def CloseLocker(*args):
     try:
         if len(args[0]) == 4:
@@ -146,7 +151,6 @@ def CloseLocker(*args):
         else:
             id, ty, loker = [i for i in args[0]]
 
-        # print('con', id, ty, chek, loker)
         host = args[1]
         Port = args[2]
         lstOutput1 = args[3]
@@ -156,14 +160,14 @@ def CloseLocker(*args):
         tinhieuchot = args[7]
 
         demtime = time.time()
-        time.sleep(2)
+        time.sleep(0.5)
         while time.time() - demtime <= 30:  # chờ tín hiệu dong cua ne: Chờ 3 phut =180s
             if int(loker) > 16:
                 lstOutput2[int(loker) - 17].value = False
                 if lstInput2[int(loker) - 17].value == tinhieuchot:
                     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as Sok:
                         Sok.connect((host, Port))
-                        dtan = bytes(TaiCauTruc(id, 'Doorclose', loker.split("\n")[0], GetData=2), 'utf-8')
+                        dtan = bytes(TaiCauTruc(id, 'Doorclose', loker, GetData=2), 'utf-8')
                         Sok.sendall(len(dtan).to_bytes(4, 'big'))
                         Sok.sendall(dtan)
                         Sok.close()
@@ -173,7 +177,7 @@ def CloseLocker(*args):
                 if lstInput1[int(loker) - 1].value == tinhieuchot:
                     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as Sok:
                         Sok.connect((host, Port))
-                        dtan = bytes(TaiCauTruc(id, 'Doorclose', loker.split("\n")[0], GetData=2), 'utf-8')
+                        dtan = bytes(TaiCauTruc(id, 'Doorclose', loker, GetData=2), 'utf-8')
                         Sok.sendall(len(dtan).to_bytes(4, 'big'))
                         Sok.sendall(dtan)
                         Sok.close()

@@ -1,5 +1,5 @@
 import socket
-import subprocess
+# import subprocess
 import threading
 import time
 
@@ -11,7 +11,7 @@ lstip = []
 
 class Producer(threading.Thread):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.settimeout(5)
+    sock.settimeout(60)
 
     def __init__(self, Cmd, condition, host, Port, exitEvent, lstthreadStop):
         threading.Thread.__init__(self)
@@ -44,11 +44,9 @@ class Producer(threading.Thread):
         threadmain = '<id>121</id><type>socket</type><data>main</data>'
         threadmain = threadmain.encode('utf-8')
         size = len(threadmain)
-        print(threadmain)
         self.sock.sendall(size.to_bytes(4, byteorder='big'))
         self.sock.sendall(threadmain)
         time.sleep(1)
-
         while 1:
             time.sleep(0.5)
             try:
@@ -58,15 +56,15 @@ class Producer(threading.Thread):
                     if self._Exit.is_set():
                         break
                     full_msg = ''
-                    data = self.sock.recv(1024)
-                    if len(data) > 0:
-                        full_msg += data.decode('utf-8')
+                    Dta = self.sock.recv(1024)
 
-                    if len(data) <= 1024 and len(data) > 0:
-                        data = full_msg.split(";")
-                        print('check nhan thong tin', data)
-                        if data[1] == 'Update\n':
-                            if Func.is_connected() == True:
+                    if len(Dta) > 0:
+                        full_msg += Dta.decode('utf-8')
+
+                    if len(Dta) <= 1024 and len(Dta) > 0:
+                        Dta = full_msg.split(";")
+                        if Dta[1] == 'Update':
+                            if Func.is_connected():
                                 exit_event = threading.Event()
                                 exit_event.set()
                                 self._Exit.set()
@@ -77,21 +75,20 @@ class Producer(threading.Thread):
                             else:
                                 print('Vui Long Kiem Tra Ket Noi internet. Thu Lai...')
                         self.condition.acquire()
-                        self.Cmd.append(full_msg)
+                        self.Cmd.append(full_msg.split("\n")[0])
                         self.condition.notify()
                         self.condition.release()
                         pass
                     full_msg = ''
-                    if len(data) == 0:
+                    if len(Dta) == 0:
                         self.sock.close()
                         check = True
                     time.sleep(0.1)
                     pass
             except Exception as e:
-                print(str(e))
                 try:
-                    lstip = Func.get_default_gateway_linux()
-                    for i in lstip:
+                    lstIp = Func.get_default_gateway_linux()
+                    for i in lstIp:
                         if i == self.Host:
                             break
                         self.Host = i
@@ -107,19 +104,17 @@ class Producer(threading.Thread):
                                     t.Host = self.Host
                         except Exception as e:
                             print(str(e))
-                    lstip.clear()
+                    lstIp.clear()
                     if check:
                         self.sock.close()
                         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                        self.sock.settimeout(5)
+                        self.sock.settimeout(60)
                         try:
                             self.sock.connect((self.Host, self.Port))
-
                             print('Connected')
                             threadmain = '<id>121</id><type>socket</type><data>main</data>'
                             threadmain = threadmain.encode('utf-8')
                             size = len(threadmain)
-                            print(threadmain)
                             self.sock.sendall(size.to_bytes(4, byteorder='big'))
                             self.sock.sendall(threadmain)
                             check = False
@@ -135,5 +130,5 @@ class Producer(threading.Thread):
                     self.sock.close()
                     continue
 
-    def __del__(self):
-        print('Doi tuong preducer bi xoa')
+    # def __del__(self):
+    #     print('Doi tuong preducer bi xoa')

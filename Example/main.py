@@ -1,5 +1,4 @@
 from Locker_Project import mian
-
 try:
     if __name__ == '__main__':
         mian.Run()
