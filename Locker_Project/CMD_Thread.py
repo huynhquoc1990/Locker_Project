@@ -63,8 +63,8 @@ class Producer(threading.Thread):
 
                     if 1024 >= len(Dta) > 0:
                         Dta = full_msg.split(";")
-                        print(Dta[1])
-                        if Dta[1] == 'Update':
+                        if Dta[1].split("\n")[0] is 'Update':
+                            print('vao chuong trinh update')
                             if Func.is_connected():
                                 exit_event = threading.Event()
                                 exit_event.set()

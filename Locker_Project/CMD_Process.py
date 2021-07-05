@@ -77,11 +77,11 @@ class CMD_Process(threading.Thread):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             sock.connect((self.host, self.Port))
-            threadmain = '<id>121</id><type>socket</type><data>send</data>'  # <type>socket</type><data>send</data>
-            threadmain = threadmain.encode('utf-8')
-            size = len(threadmain)
+            ThreadMain = '<id>121</id><type>socket</type><data>send</data>'  # <type>socket</type><data>send</data>
+            ThreadMain = ThreadMain.encode('utf-8')
+            size = len(ThreadMain)
             sock.sendall(size.to_bytes(4, byteorder='big'))
-            sock.sendall(threadmain)
+            sock.sendall(ThreadMain)
         except socket.error:
             sock.close()
             pass
@@ -146,12 +146,12 @@ class CMD_Process(threading.Thread):
                             print('Loi Chua co Board Io', str(Loi3))
                         break
                     if (dta[1] == 'Fused' and dta[2] != "OK") or dta[1] == 'Fopen' or dta[1] == 'FDK':
-                        if self.ThreadFinger.ThreadName == None:
+                        if self.ThreadFinger.ThreadName is None:
                             self.ThreadFinger.ThreadName = 'th'
                             self.ThreadFinger.Thread_Object = t1
 
                         elif self.ThreadFinger.Name != 'finger_print':
-                            if self.ThreadTag.ThreadName != None:
+                            if self.ThreadTag.ThreadName is not None:
                                 self.ThreadTag.Thread_Object.raise_exception()
                             self.ThreadFinger.Thread_Object.raise_exception()
 
@@ -173,12 +173,12 @@ class CMD_Process(threading.Thread):
                             self.ThreadFinger.Thread_Object.mes = dta
                             self.ThreadFinger.Thread_Object.TypeRead = dta[1]
                     if (dta[1] == 'Cused' and dta[2] != "OK") or dta[1] == 'Copen':
-                        if self.ThreadTag.ThreadName == None:
+                        if self.ThreadTag.ThreadName is None:
                             self.ThreadTag.ThreadName = 'te'
                             self.ThreadTag.Thread_Object = t2
                         elif self.ThreadTag.ThreadName != 'Cused':
 
-                            if self.ThreadFinger.ThreadName != None:
+                            if self.ThreadFinger.ThreadName is not None:
                                 self.ThreadFinger.Thread_Object.raise_exception()
 
                             self.ThreadTag.Thread_Object.raise_exception()
