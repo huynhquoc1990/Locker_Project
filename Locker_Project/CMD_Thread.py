@@ -61,8 +61,9 @@ class Producer(threading.Thread):
                     if len(Dta) > 0:
                         full_msg += Dta.decode('utf-8')
 
-                    if len(Dta) <= 1024 and len(Dta) > 0:
+                    if 1024 >= len(Dta) > 0:
                         Dta = full_msg.split(";")
+                        print(Dta[1])
                         if Dta[1] == 'Update':
                             if Func.is_connected():
                                 exit_event = threading.Event()

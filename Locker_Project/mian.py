@@ -1,6 +1,5 @@
 import struct
 import time
-
 import board
 import serial
 import socket
@@ -9,12 +8,11 @@ import digitalio
 
 from adafruit_mcp230xx.mcp23017 import MCP23017
 from adafruit_pn532.spi import PN532_SPI
-import base64
+# import base64
 import threading
-from io import BytesIO
+# from io import BytesIO
 from digitalio import DigitalInOut
-from Locker_Project import CMD_Thread, CMD_Process, Func, adafruit_fingerprint, Test_Send_Dta
-
+from Locker_Project import CMD_Thread, CMD_Process, Func, adafruit_fingerprint
 
 host = ''
 Port = 3003
@@ -42,7 +40,7 @@ pn532 = PN532_SPI(spi, cs_pin, reset=reset_pin, debug=False)
 exit_event = threading.Event()
 
 Danhsachtu = []  # chứa và quản lý danh sách tủ
-uart = serial.Serial("/dev/ttyS0", baudrate=528000, timeout=1)  # 489600  528000
+uart = serial.Serial("/dev/ttyS0", baudrate=528000, timeout=1)
 try:
     finger = adafruit_fingerprint.Adafruit_Fingerprint(uart)
     print('Van tay tim thay')
@@ -119,6 +117,7 @@ def KhaiBaoOutput(mcpOutput1, mcpOutput2):
         pass
     pass
 
+
 def get_default_gateway_linux():
     """Read the default gateway directly from /proc."""
     with open("/proc/net/route") as fh:
@@ -134,27 +133,21 @@ DemVanTay = 0
 
 version = '0.6.3'
 
-txt='Chưa kết nối được ngoại vi'
+txt = 'Chưa kết nối được ngoại vi'
+
 
 def Run():
-    # global lstLocker
-
-    global sock
+    # global ListLocker
     check = False
     while 1:
-        time.sleep(1)
-        print(time.time())
-        lstip = Func.get_default_gateway_linux()
-        print(lstip)
-        for i in lstip:
-            host = i
+        LstIp = Func.get_default_gateway_linux()
+        for i in LstIp:
             try:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                sock.settimeout(5)
-                sock.connect((host, Port))
-                # host = i
-                print('tim ra host!!!!!!!!!!!!!!!!!!', host)
-
+                sock.settimeout(3)
+                sock.connect((i, Port))
+                Host_Ip = i
+                print('tim ra Host_Ip!!!!!!!!!!!!!!!!!!', Host_Ip)
                 threadmain = '<id>121</id><type>socket</type><data>main</data>'
                 threadmain = threadmain.encode('utf-8')
                 size1 = len(threadmain)
@@ -162,33 +155,34 @@ def Run():
                 sock.sendall(threadmain)
                 time.sleep(1)
 
-                chuoi1 = '<id>12121</id><type>message</type><data>Phần cứng 1.0.7</data>'
+                chuoi1 = '<id>12121</id><type>message</type><data>Phần cứng 1.0.9</data>'
                 chuoi1 = chuoi1.encode('utf-8')
                 size2 = len(chuoi1)
                 sock.sendall(size2.to_bytes(4, byteorder='big'))
                 sock.sendall(chuoi1)
                 time.sleep(1)
-                print('1.0.7')
+                print('1.0.9')
 
                 chuoi2 = '<id>1212</id><type>getdata</type><data>statusdoor</data>'
                 chuoi2 = chuoi2.encode('utf-8')
                 size2 = len(chuoi2)
                 sock.sendall(size2.to_bytes(4, byteorder='big'))
                 sock.sendall(chuoi2)
+                time.sleep(1)
 
                 msg = sock.recv(1024)
                 dta = msg.decode('utf-8')
-                id = dta.split(';')[0]
+                Id = dta.split(';')[0]
                 ref = dta.split(';')[1].split('\n')[0].split('/')
-                if id == '1212':
-                    lstLocker = Func.Convert1(ref)
-                    print(lstLocker)
+                if Id == '1212':
+                    ListLocker = Func.Convert1(ref)
+                    print(ListLocker)
                 print('Goi version Ok')
                 check = True
                 break
-            except:
+            except Exception as e2:
+                print(str(e2))
                 sock.close()
-                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 check = False
                 break
         if check:
@@ -197,7 +191,7 @@ def Run():
     dem = 0
     while not Connect_Device():
         print('Chưa kết nối được các thiết bị ngoại vi')
-        dem+=1
+        dem += 1
         time.sleep(1)
         if dem >= 3:
             break
@@ -206,25 +200,21 @@ def Run():
     condition = threading.Condition()
     lstLock = threading.Lock()
 
-    # scan = CMD_ScanInput.ScanInput(lstinput=lstLocker, lstlock=lstLock,
-    #                                lstID=lst,exitEvent=exit_event,
-    #                                input1=lstInput1,input2=lstInput2,
-    #                                output1=lstOutput1,output2=lstOutput2)
-    # threamain.append(scan)
-    producer = CMD_Thread.Producer(Cmd=lstID, condition=condition, host=host, Port=Port, exitEvent=exit_event,
+    producer = CMD_Thread.Producer(Cmd=lstID, condition=condition, host=Host_Ip, Port=Port, exitEvent=exit_event,
                                    lstthreadStop=threamain)
     threamain.append(producer)
 
     fingerT = CMD_Process.CMD_Process(finger=finger, pn532=pn532, Cmd=lstID, condition=condition,
-                                      lst_input=lstLocker, lstLock=lstLock,
+                                      lst_input=ListLocker, lstLock=lstLock,
                                       exitEvent=exit_event, input1=lstInput1,
                                       input2=lstInput2, output1=lstOutput1, output2=lstOutput2,
-                                      host=host, Port=Port, uart=uart, tinhieuchot=tinhieuchot)
+                                      host=Host_Ip, Port=Port, uart=uart, tinhieuchot=tinhieuchot)
     threamain.append(fingerT)
 
     for t in threamain:
         t.start()
         time.sleep(1)
+
 
 try:
     if __name__ == '__main__':

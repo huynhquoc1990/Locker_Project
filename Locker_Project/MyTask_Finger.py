@@ -35,6 +35,7 @@ class MyTask_Finger(threading.Thread):
             while time.time() - times <= 30:  # Ham kich hoat cam bien van tay
                 i = self.finger.get_image()
                 if i == adafruit_fingerprint.OK:
+                    times1= time.time()
                     img = Image.new("L", (256, 288), "white")  # 256, 288
                     pixeldata = img.load()
                     mask = 0b00001111
@@ -53,6 +54,7 @@ class MyTask_Finger(threading.Thread):
                     buffer = BytesIO()
                     img.save(buffer, format="PNG")  # Enregistre l'image dans le buffer
                     myimage = buffer.getvalue()
+                    print(f'Gia tri doc cam bien ={time.time()-times1}')
                     return base64.b64encode(myimage).decode('utf-8')
         except Exception as e:
             print('Loi Van Tay', str(e))
