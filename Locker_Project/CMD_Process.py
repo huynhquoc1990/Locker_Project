@@ -26,9 +26,10 @@ class Class_Thread:
     @Thread_Object.setter
     def Thread_Object(self, thread):
         self.Object = thread
+        pass
 
 
-class CMD_Process(threading.Thread):
+class Cmd_Process(threading.Thread):
     exit_event = threading.Event()
 
     condition = threading.Thread()
