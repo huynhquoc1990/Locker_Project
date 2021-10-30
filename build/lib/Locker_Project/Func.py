@@ -257,7 +257,6 @@ def restart():
 
 def Update():
     if is_connected():
-        print('Updating...')
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--upgrade', 'Locker-Project'])
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--upgrade', 'Locker-Project'])
         restart()
